@@ -8,7 +8,13 @@ import routes from '@/routes'
 const Main = () => {
   const content = useRoutes(routes)
   return (
-    <Container maxWidth='xl'>
+    <Container
+      maxWidth='xl'
+      sx={{
+        mt: '80px',
+        minHeight: 'calc(100vh - 120px)',
+      }}
+    >
       <Suspense fallback={<div>Loading...</div>}>{content}</Suspense>
     </Container>
   )

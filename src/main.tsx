@@ -10,7 +10,8 @@ import './index.css'
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#b71c1c'
+      main: '#b71c1c',
+      contrastText: '#fff'
     },
     secondary: {
       main: '#ffffff'

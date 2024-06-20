@@ -7,7 +7,7 @@ import Logo from '@/assets/logo.svg?react'
 const Header = () => {
   return (
     <AppBar
-      position='static'
+      position='fixed'
       sx={{
         w: '100vw',
         minHeight: '80px',
