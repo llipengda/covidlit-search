@@ -1,23 +1,25 @@
-import { Suspense } from 'react'
+import React, { Suspense } from 'react'
 import { useRoutes } from 'react-router-dom'
 
-import { Container } from '@mui/material'
+import { Box } from '@mui/material'
 
+import Loading from '@/components/Loading'
 import routes from '@/routes'
 
 const Main = () => {
   const content = useRoutes(routes)
   return (
-    <Container
-      maxWidth='xl'
+    <Box
       sx={{
-        mt: '80px',
+        pt: '80px',
         minHeight: 'calc(100vh - 120px)',
+        paddingLeft: 0,
+        paddingRight: 0
       }}
     >
-      <Suspense fallback={<div>Loading...</div>}>{content}</Suspense>
-    </Container>
+      <Suspense fallback={<Loading />}>{content}</Suspense>
+    </Box>
   )
 }
 
-export default Main
+export default React.memo(Main)

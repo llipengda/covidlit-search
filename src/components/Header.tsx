@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { AppBar, Box, Button } from '@mui/material'
 
@@ -21,7 +22,9 @@ const Header = () => {
       }}
       color='secondary'
     >
-      <Logo />
+      <Link to='/home' title='Home page' style={{marginTop: '10px'}}>
+        <Logo />
+      </Link>
       <Box sx={{ display: 'inline' }}>
         <Button variant='outlined' sx={{ mr: 2 }}>
           Register
