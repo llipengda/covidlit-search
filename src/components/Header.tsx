@@ -22,14 +22,18 @@ const Header = () => {
       }}
       color='secondary'
     >
-      <Link to='/home' title='Home page' style={{marginTop: '10px'}}>
+      <Link to='/home' title='Home page' style={{ marginTop: '10px' }}>
         <Logo />
       </Link>
       <Box sx={{ display: 'inline' }}>
-        <Button variant='outlined' sx={{ mr: 2 }}>
-          Register
-        </Button>
-        <Button variant='contained'>Log in</Button>
+        <Link to={`/signup?from=${window.location.pathname}`}>
+          <Button variant='outlined' sx={{ mr: 2 }}>
+            Sign up
+          </Button>
+        </Link>
+        <Link to={`/login?from=${window.location.pathname}`}>
+          <Button variant='contained'>Log in</Button>
+        </Link>
       </Box>
     </AppBar>
   )

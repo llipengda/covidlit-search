@@ -21,6 +21,40 @@ const theme = responsiveFontSizes(
       secondary: {
         main: '#ffffff'
       }
+    },
+    components: {
+      MuiInputBase: {
+        styleOverrides: {
+          input: {
+            '&:-webkit-autofill': {
+              transitionDelay: '9999s',
+              transitionProperty: 'background-color, color'
+            }
+          }
+        }
+      },
+      MuiFilledInput: {
+        styleOverrides: {
+          input: {
+            '&:-webkit-autofill': {
+              WebkitBoxShadow: 'inherit',
+              WebkitTextFillColor: 'inherit',
+              caretColor: 'inherit'
+            }
+          }
+        }
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          input: {
+            '&:-webkit-autofill': {
+              WebkitBoxShadow: 'inherit',
+              WebkitTextFillColor: 'inherit',
+              caretColor: 'inherit'
+            }
+          }
+        }
+      }
     }
   })
 )
