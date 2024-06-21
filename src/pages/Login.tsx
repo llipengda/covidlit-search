@@ -10,7 +10,9 @@ import {
   Typography
 } from '@mui/material'
 
+import UserApi from '@/api/User'
 import logo from '@/assets/logo.svg'
+import Message from '@/utils/message'
 
 const Login = () => {
   const from = useSearchParams()[0].get('from')
@@ -21,6 +23,8 @@ const Login = () => {
   const [helperText, setHelperText] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordHasError, setPasswordHasError] = useState(false)
+  const [passwordHelperText, setPasswordHelperText] = useState('')
 
   const [emailHasValue, setEmailHasValue] = useState(false)
   const [passwordHasValue, setPasswordHasValue] = useState(false)
@@ -49,8 +53,32 @@ const Login = () => {
     setHelperText('')
   }
 
-  const login = () => {
+  const login = async () => {
+    const data = await UserApi.login(email, password)
+    if (data.status === 401) {
+      setHasError(true)
+      setPasswordHasError(true)
+      setHelperText('Invalid email or password')
+      setPasswordHelperText('Invalid email or password')
+      Message.error({ content: 'Invalid email or password', duration: 2000 })
+      return
+    }
     navigate(from ?? '/home')
+  }
+
+  const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value)
+    if (e.target.value.length < 8) {
+      setPasswordHasError(true)
+      setPasswordHelperText('Password must be at least 8 characters long')
+      return
+    }
+    if (helperText === 'Invalid email or password') {
+      setHasError(false)
+      setHelperText('')
+    }
+    setPasswordHasError(false)
+    setPasswordHelperText('')
   }
 
   return (
@@ -95,8 +123,10 @@ const Login = () => {
             type='password'
             autoComplete='off'
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={onPasswordChange}
             fullWidth
+            error={hasError}
+            helperText={passwordHelperText}
             inputProps={{
               onAnimationStart: makeAnimationStartHandler(setPasswordHasValue)
             }}
@@ -107,7 +137,7 @@ const Login = () => {
           <Button
             variant='contained'
             fullWidth
-            disabled={hasError || !email || !password}
+            disabled={hasError || passwordHasError || !email || !password}
             onClick={login}
           >
             Log in

@@ -18,7 +18,10 @@ import {
 } from '@mui/material'
 import type { TransitionProps } from '@mui/material/transitions'
 
+import CodeApi from '@/api/Code'
+import UserApi from '@/api/User'
 import logo from '@/assets/logo.svg'
+import Message from '@/utils/message'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -48,6 +51,9 @@ const SignUp = () => {
   const [retypePasswordHasError, setRetypePasswordHasError] = useState(false)
   const [passwordHelperText, setPasswordHelperText] = useState('')
   const [retypePasswordHelperText, setRetypePasswordHelperText] = useState('')
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null)
+  const [sendCodeDisabled, setSendCodeDisabled] = useState(false)
+  const [sendCodeText, setSendCodeText] = useState('Send')
 
   const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -101,8 +107,49 @@ const SignUp = () => {
     setRetypePasswordHelperText('')
   }
 
-  const signup = () => {
+  const signup = async () => {
+    const data = await UserApi.signup(email, password, code)
+    if (data.status === 409) {
+      setEmailHasError(true)
+      setEmailHelperText('Email already exists')
+      Message.error({ content: 'Email already exists', duration: 2000 })
+      return
+    }
+    if (data.status === 400) {
+      setCodeHasError(true)
+      setCodeHelperText('Invalid verification code')
+      Message.error({ content: 'Invalid verification code', duration: 2000 })
+      return
+    }
+    Message.success({ content: 'Sign up successfully', duration: 2000 })
     navigate(from ?? '/home')
+  }
+
+  const sendCode = async () => {
+    const data = await CodeApi.sendCode(email)
+    if (data.status === 400) {
+      Message.error({
+        content: 'Code has been already sent, please retry in 5 minutes',
+        duration: 2000
+      })
+    }
+    setSendCodeDisabled(true)
+    setSendCodeText('300s')
+    if (intervalId) {
+      clearInterval(intervalId)
+    }
+    setIntervalId(
+      setInterval(() => {
+        setSendCodeText(prev => {
+          if (prev === '0s' || prev === 'Send') {
+            clearInterval(intervalId as NodeJS.Timeout)
+            setSendCodeDisabled(false)
+            return 'Send'
+          }
+          return `${parseInt(prev.substring(0)) - 1}s`
+        })
+      }, 1000)
+    )
   }
 
   return (
@@ -154,8 +201,10 @@ const SignUp = () => {
                 top: codeHasError ? 'calc(50% - 10px)' : '50%',
                 transform: 'translateY(-50%)'
               }}
+              disabled={sendCodeDisabled}
+              onClick={sendCode}
             >
-              Send
+              {sendCodeText}
             </Button>
           </Box>
           <TextField
