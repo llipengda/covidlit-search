@@ -13,8 +13,6 @@ const Home = () => {
         <SearchBox
           mt='20px'
           zIndex={1}
-          pl='15px'
-          pr='40px'
           sx={{
             transform: 'translateY(50%)'
           }}
