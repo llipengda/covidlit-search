@@ -133,6 +133,7 @@ const SignUp = () => {
         duration: 2000
       })
     }
+    Message.success({ content: 'Verification code sent', duration: 2000 })
     setSendCodeDisabled(true)
     setSendCodeText('300s')
     if (intervalId) {

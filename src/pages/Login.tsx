@@ -12,6 +12,8 @@ import {
 
 import UserApi from '@/api/User'
 import logo from '@/assets/logo.svg'
+import useTokenStore from '@/stores/tokenStore'
+import useUserStore from '@/stores/userStore'
 import Message from '@/utils/message'
 
 const Login = () => {
@@ -26,8 +28,12 @@ const Login = () => {
   const [passwordHasError, setPasswordHasError] = useState(false)
   const [passwordHelperText, setPasswordHelperText] = useState('')
 
+  const setToken = useTokenStore(state => state.setToken)
+  const setUser = useUserStore(state => state.setUser)
+
   const [emailHasValue, setEmailHasValue] = useState(false)
   const [passwordHasValue, setPasswordHasValue] = useState(false)
+
   const makeAnimationStartHandler =
     (stateSetter: React.Dispatch<React.SetStateAction<boolean>>) =>
     (e: React.AnimationEvent<HTMLInputElement>) => {
@@ -63,6 +69,9 @@ const Login = () => {
       Message.error({ content: 'Invalid email or password', duration: 2000 })
       return
     }
+    setToken(data.data.token)
+    setUser(data.data)
+    Message.success({ content: 'Login successful', duration: 2000 })
     navigate(from ?? '/home')
   }
 
