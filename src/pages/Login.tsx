@@ -12,6 +12,7 @@ import {
 
 import UserApi from '@/api/User'
 import logo from '@/assets/logo.svg'
+import { useFromLink } from '@/hooks/useFromNavigate'
 import useTokenStore from '@/stores/tokenStore'
 import useUserStore from '@/stores/userStore'
 import Message from '@/utils/message'
@@ -20,6 +21,8 @@ const Login = () => {
   const from = useSearchParams()[0].get('from')
 
   const navigate = useNavigate()
+
+  const fromLink = useFromLink()
 
   const [hasError, setHasError] = useState(false)
   const [helperText, setHelperText] = useState('')
@@ -156,10 +159,7 @@ const Login = () => {
               <Link>Forgot password?</Link>
             </Typography>
             <Typography variant='body2'>
-              <RLink
-                to={`/signup?from=${window.location.pathname}`}
-                title='Sign up'
-              >
+              <RLink to={fromLink('/signup')} title='Sign up'>
                 <Link>Sign up</Link>
               </RLink>
             </Typography>

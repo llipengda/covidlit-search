@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom'
 import { AppBar, Box, Button } from '@mui/material'
 
 import Logo from '@/assets/logo.svg?react'
+import { useFromLink } from '@/hooks/useFromNavigate'
 
 const Header = () => {
+  const fromLink = useFromLink()
+
   return (
     <AppBar
       position='fixed'
@@ -26,12 +29,12 @@ const Header = () => {
         <Logo />
       </Link>
       <Box sx={{ display: 'inline' }}>
-        <Link to={`/signup?from=${window.location.pathname}`}>
+        <Link to={fromLink('/signup')}>
           <Button variant='outlined' sx={{ mr: 2 }}>
             Sign up
           </Button>
         </Link>
-        <Link to={`/login?from=${window.location.pathname}`}>
+        <Link to={fromLink('/login')}>
           <Button variant='contained'>Log in</Button>
         </Link>
       </Box>
