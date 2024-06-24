@@ -202,7 +202,7 @@ const SignUp = () => {
                 top: codeHasError ? 'calc(50% - 10px)' : '50%',
                 transform: 'translateY(-50%)'
               }}
-              disabled={sendCodeDisabled}
+              disabled={sendCodeDisabled || !email}
               onClick={sendCode}
             >
               {sendCodeText}
