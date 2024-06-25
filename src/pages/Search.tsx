@@ -139,7 +139,7 @@ const Search = () => {
               <Times>From</Times>
             </Typography>
             <DatePicker
-              format='yyyy-MM-dd'
+              format='YYYY-MM-DD'
               sx={{ mt: '10px', mb: '10px' }}
               slotProps={{
                 textField: {
@@ -152,7 +152,7 @@ const Search = () => {
             </Typography>
             <DatePicker
               sx={{ mt: '10px', mb: '10px' }}
-              format='yyyy-MM-dd'
+              format='YYYY-MM-DD'
               slotProps={{
                 textField: {
                   size: 'small'
