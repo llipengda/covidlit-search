@@ -115,7 +115,7 @@ const SignUp = () => {
       Message.error('Email already exists', 5000)
       return
     }
-    if (data.status === 400) {
+    if (data.status === 401) {
       setCodeHasError(true)
       setCodeHelperText('Invalid verification code')
       Message.error('Invalid verification code', 5000)
