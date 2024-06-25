@@ -6,6 +6,8 @@ import { Box, Button, Typography, styled } from '@mui/material'
 import HighlightText from '@/components/HighlightText'
 import type Article from '@/types/Article'
 import ArticleSearchBy from '@/types/ArticleSearchBy'
+import getDate from '@/utils/getDate'
+import maxLength from '@/utils/maxLength'
 
 interface ArticleListItemProps {
   article: Article
@@ -81,6 +83,9 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
                   keywords={keywords}
                   disabled={!(searchBy & ArticleSearchBy.journal)}
                 />
+                {article.volume && ` ${article.volume}`}
+                {article.pages && ` ${article.pages}`}
+                {article.publishTime && ` (${getDate(article.publishTime)})`}
               </i>
             </Roboto>
           </Typography>
@@ -88,7 +93,7 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
         {article.abstract && (
           <Typography variant='body1' color='GrayText' ml='20px'>
             <Roboto>
-              <i>{article.abstract}</i>
+              <i>{maxLength(500)(article.abstract)}</i>
             </Roboto>
           </Typography>
         )}

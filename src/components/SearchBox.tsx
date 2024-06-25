@@ -20,6 +20,8 @@ const getType = (selectedBtn: number) => {
 const SearchBox: typeof Box = (props: { [key: string]: any }) => {
   const navigate = useNavigate()
   const q = useSearchParams()[0].get('q')
+  const searchBy = parseInt(useSearchParams()[0].get('searchBy') || '1')
+  const allowNoUrl = useSearchParams()[0].get('allowNoUrl') || false
 
   const [value, setValue] = useState(q)
   const [focused, setFocused] = useState(false)
@@ -29,7 +31,7 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
     index && setSelectedBtn(index)
     setFocused(false)
     navigate(
-      `/search?q=${value}&type=${getType(index ?? selectedBtn)}&searchBy=1&allowNoUrl=false`
+      `/search?q=${value}&type=${getType(index ?? selectedBtn)}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}`
     )
   }
 

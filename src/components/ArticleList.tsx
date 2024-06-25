@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Box, List, ListItem, Pagination } from '@mui/material'
 
@@ -11,6 +11,7 @@ interface ArticleListProps {
   search: string
   searchBy: ArticleSearchBy
   total: number
+  allowNoUrl: boolean
   setTotal: (total: number) => void
   setLoading: (loading: boolean) => void
 }
@@ -19,6 +20,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
   search,
   searchBy,
   total,
+  allowNoUrl,
   setTotal,
   setLoading
 }) => {
@@ -29,16 +31,18 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   useEffect(() => {
     Promise.all([
-      ArticleApi.getArticlesCnt(search, searchBy).then(res => {
+      ArticleApi.getArticlesCnt(search, searchBy, allowNoUrl).then(res => {
         setTotal(res.data)
         console.log('total ok')
       }),
-      ArticleApi.getArticles(1, pageSize, search, searchBy).then(res => {
-        setArticles(res.data)
-        console.log('articles ok')
-      })
+      ArticleApi.getArticles(1, pageSize, search, searchBy, allowNoUrl).then(
+        res => {
+          setArticles(res.data)
+          console.log('articles ok')
+        }
+      )
     ]).then(() => setLoading(false))
-  }, [search, searchBy, setTotal, setLoading])
+  }, [search, searchBy, setTotal, setLoading, allowNoUrl])
 
   return (
     <Box>
@@ -81,4 +85,4 @@ const ArticleList: React.FC<ArticleListProps> = ({
   )
 }
 
-export default ArticleList
+export default React.memo(ArticleList)

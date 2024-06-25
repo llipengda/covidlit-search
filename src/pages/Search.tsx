@@ -5,12 +5,18 @@ import SearchIcon from '@mui/icons-material/Search'
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
   InputLabel,
   LinearProgress,
+  ListItemText,
   MenuItem,
+  OutlinedInput,
   Select,
+  type SelectChangeEvent,
+  Switch,
   TextField,
   Typography,
   styled
@@ -18,6 +24,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers'
 
 import ArticleList from '@/components/ArticleList'
+import SearchBy from '@/utils/SearchBy'
 
 const Times = styled('span')({
   fontFamily: 'Times New Roman'
@@ -26,9 +33,53 @@ const Times = styled('span')({
 const Search = () => {
   const search = useSearchParams()[0].get('q')!
   const type = useSearchParams()[0].get('type')!
-  const searchBy = parseInt(useSearchParams()[0].get('searchBy') || '1')
+  const [searchBy, setSearchBy] = useState(
+    parseInt(useSearchParams()[0].get('searchBy') || '1')
+  )
+  const [allowNoUrl, setAllowNoUrl] = useState(
+    useSearchParams()[0].get('allowNoUrl') === 'true'
+  )
+
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+
+  const [searchByValue, setSearchByValue] = useState<
+    ('title' | 'author' | 'journal')[]
+  >(SearchBy.getArray(searchBy))
+  const searchByOptions = ['title', 'author', 'journal'] as (
+    | 'title'
+    | 'author'
+    | 'journal'
+  )[]
+
+  const handleChange = (event: SelectChangeEvent<typeof searchByValue>) => {
+    const value = event.target.value
+    setSearchByValue(
+      typeof value === 'string'
+        ? (value.split(',') as ('title' | 'author' | 'journal')[])
+        : value
+    )
+  }
+
+  const handleClose = () => {
+    setLoading(true)
+    setSearchBy(SearchBy.getNumber(searchByValue))
+    window.history.pushState(
+      null,
+      '',
+      `/search?q=${search}&type=${type}&searchBy=${SearchBy.getNumber(searchByValue)}&allowNoUrl=${allowNoUrl}`
+    )
+  }
+
+  const handleSwitchChange = () => {
+    setAllowNoUrl(!allowNoUrl)
+    setLoading(true)
+    window.history.pushState(
+      null,
+      '',
+      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${!allowNoUrl}`
+    )
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -88,6 +139,7 @@ const Search = () => {
               <Times>From</Times>
             </Typography>
             <DatePicker
+              format='yyyy-MM-dd'
               sx={{ mt: '10px', mb: '10px' }}
               slotProps={{
                 textField: {
@@ -100,6 +152,7 @@ const Search = () => {
             </Typography>
             <DatePicker
               sx={{ mt: '10px', mb: '10px' }}
+              format='yyyy-MM-dd'
               slotProps={{
                 textField: {
                   size: 'small'
@@ -116,20 +169,51 @@ const Search = () => {
           <Typography variant='h5'>
             <Times>{total} Results</Times>
           </Typography>
-          <FormControl size='small' sx={{ width: '10%', mt: '15px' }}>
-            <InputLabel>Sort by</InputLabel>
-            <Select label='Sort by' defaultValue={0}>
-              <MenuItem value={0}>None</MenuItem>
-              <MenuItem value={1}>Title</MenuItem>
-              <MenuItem value={2}>Author</MenuItem>
-              <MenuItem value={4}>Journal</MenuItem>
-            </Select>
-          </FormControl>
+          <Box mt='15px' display='flex' alignItems='center'>
+            <FormControl size='small' sx={{ width: '15%', mr: '20px' }}>
+              <InputLabel>Search by</InputLabel>
+              <Select
+                labelId='demo-multiple-checkbox-label'
+                id='demo-multiple-checkbox'
+                multiple
+                value={searchByValue}
+                onChange={handleChange}
+                input={<OutlinedInput label='Search by' />}
+                renderValue={selected => selected.join(', ')}
+                onClose={handleClose}
+              >
+                {searchByOptions.map(s => (
+                  <MenuItem key={s} value={s}>
+                    <Checkbox checked={searchByValue.indexOf(s) > -1} />
+                    <ListItemText primary={s} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size='small' sx={{ width: '10%', mr: '20px' }}>
+              <InputLabel>Sort by</InputLabel>
+              <Select label='Sort by' defaultValue={0}>
+                <MenuItem value={0}>
+                  <i>None</i>
+                </MenuItem>
+                <MenuItem value={1}>Title</MenuItem>
+                <MenuItem value={2}>Author</MenuItem>
+                <MenuItem value={4}>Journal</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControlLabel
+              control={
+                <Switch checked={allowNoUrl} onChange={handleSwitchChange} />
+              }
+              label='Show inaccessible articles'
+            />
+          </Box>
           <Box mt='20px'>
             {type === 'article' && (
               <ArticleList
                 search={search}
                 searchBy={searchBy}
+                allowNoUrl={allowNoUrl}
                 total={total}
                 setTotal={handleSetTotal}
                 setLoading={handleLoad}
