@@ -1,38 +1,14 @@
 import React, { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  Link,
-  Slide,
-  TextField
-} from '@mui/material'
-import type { TransitionProps } from '@mui/material/transitions'
+import { Box, Button, Container, TextField } from '@mui/material'
 
 import CodeApi from '@/api/Code'
 import UserApi from '@/api/User'
 import logo from '@/assets/logo.svg'
 import Message from '@/utils/message'
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<any, any>
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction='up' ref={ref} {...props} />
-})
-
-const SignUp = () => {
+const ResetPassword = () => {
   const from = useSearchParams()[0].get('from')
 
   const navigate = useNavigate()
@@ -45,8 +21,6 @@ const SignUp = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [retypePassword, setRetypePassword] = useState('')
-  const [checked, setChecked] = useState(false)
-  const [open, setOpen] = useState(false)
   const [passwordHasError, setPasswordHasError] = useState(false)
   const [retypePasswordHasError, setRetypePasswordHasError] = useState(false)
   const [passwordHelperText, setPasswordHelperText] = useState('')
@@ -107,21 +81,15 @@ const SignUp = () => {
     setRetypePasswordHelperText('')
   }
 
-  const signup = async () => {
-    const data = await UserApi.signup(email, password, code)
-    if (data.status === 409) {
-      setEmailHasError(true)
-      setEmailHelperText('Email already exists')
-      Message.error('Email already exists', 5000)
-      return
-    }
-    if (data.status === 400) {
+  const reset = async () => {
+    const data = await UserApi.updatePasswordByCode(email, code, password)
+    if (data.status === 401) {
       setCodeHasError(true)
       setCodeHelperText('Invalid verification code')
       Message.error('Invalid verification code', 5000)
       return
     }
-    Message.success('Sign up successfully', 5000)
+    Message.success('Reset password successfully', 5000)
     navigate(from ?? '/home')
   }
 
@@ -210,7 +178,7 @@ const SignUp = () => {
             </Button>
           </Box>
           <TextField
-            label='Password'
+            label='New Password'
             variant='outlined'
             type='password'
             autoComplete='new-password'
@@ -221,7 +189,7 @@ const SignUp = () => {
             error={passwordHasError}
           />
           <TextField
-            label='Confirm Password'
+            label='Confirm New Password'
             variant='outlined'
             type='password'
             autoComplete='new-password'
@@ -230,20 +198,6 @@ const SignUp = () => {
             onChange={onRetypePasswordChange}
             helperText={retypePasswordHelperText}
             error={retypePasswordHasError}
-          />
-          <FormControlLabel
-            control={<Checkbox />}
-            checked={checked}
-            onChange={() => setChecked(checked => !checked)}
-            label={
-              <span onClick={e => e.preventDefault()}>
-                I accept the{' '}
-                <Link>
-                  <i onClick={() => setOpen(true)}>Terms and Conditions</i>
-                </Link>
-              </span>
-            }
-            sx={{ alignSelf: 'flex-start' }}
           />
           <Button
             variant='contained'
@@ -254,57 +208,18 @@ const SignUp = () => {
               passwordHasError ||
               retypePasswordHasError ||
               !code ||
-              !checked ||
               !email ||
               !password ||
               !retypePassword
             }
-            onClick={signup}
+            onClick={reset}
           >
-            Sign up
+            Reset Password
           </Button>
         </Box>
       </Box>
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setOpen(false)}
-      >
-        <DialogTitle>Terms and Conditions</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-            EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-            NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-            BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-            ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-            SOFTWARE.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setOpen(false)
-              setChecked(false)
-            }}
-          >
-            Disagree
-          </Button>
-          <Button
-            onClick={() => {
-              setOpen(false)
-              setChecked(true)
-            }}
-          >
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Container>
   )
 }
 
-export default React.memo(SignUp)
+export default React.memo(ResetPassword)

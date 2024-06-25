@@ -69,12 +69,12 @@ const Login = () => {
       setPasswordHasError(true)
       setHelperText('Invalid email or password')
       setPasswordHelperText('Invalid email or password')
-      Message.error({ content: 'Invalid email or password', duration: 2000 })
+      Message.error('Invalid email or password', 2000)
       return
     }
     setToken(data.data.token)
     setUser(data.data)
-    Message.success({ content: 'Login successful', duration: 2000 })
+    Message.success('Login successful', 2000)
     navigate(from ?? '/home')
   }
 
@@ -156,7 +156,9 @@ const Login = () => {
           </Button>
           <Box display='flex' justifyContent='space-between' width='100%'>
             <Typography variant='body2'>
-              <Link>Forgot password?</Link>
+              <RLink to={fromLink('/reset-password')} title='Reset password'>
+                <Link>Forgot password?</Link>
+              </RLink>
             </Typography>
             <Typography variant='body2'>
               <RLink to={fromLink('/signup')} title='Sign up'>

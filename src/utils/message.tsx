@@ -26,13 +26,7 @@ function CMessage({
 }
 
 const Message = {
-  success({
-    content,
-    duration
-  }: {
-    content: React.ReactNode
-    duration: number
-  }) {
+  success(content: React.ReactNode, duration: number) {
     const dom = document.createElement('div')
     const JSXdom = (
       <CMessage content={content} duration={duration} type='success'></CMessage>
@@ -41,7 +35,7 @@ const Message = {
     document.body.appendChild(dom)
   },
 
-  error({ content, duration }: { content: React.ReactNode; duration: number }) {
+  error(content: React.ReactNode, duration: number) {
     const dom = document.createElement('div')
     const JSXdom = (
       <CMessage content={content} duration={duration} type='error'></CMessage>
@@ -50,13 +44,7 @@ const Message = {
     document.body.appendChild(dom)
   },
 
-  warning({
-    content,
-    duration
-  }: {
-    content: React.ReactNode
-    duration: number
-  }) {
+  warning(content: React.ReactNode, duration: number) {
     const dom = document.createElement('div')
     const JSXdom = (
       <CMessage content={content} duration={duration} type='warning'></CMessage>
@@ -65,7 +53,7 @@ const Message = {
     document.body.appendChild(dom)
   },
 
-  info({ content, duration }: { content: React.ReactNode; duration: number }) {
+  info(content: React.ReactNode, duration: number) {
     const dom = document.createElement('div')
     const JSXdom = (
       <CMessage content={content} duration={duration} type='warning'></CMessage>

@@ -23,6 +23,7 @@ import Logo from '@/assets/logo.svg?react'
 import { useFromLink } from '@/hooks/useFromNavigate'
 import useTokenStore from '@/stores/tokenStore'
 import useUserStore from '@/stores/userStore'
+import Message from '@/utils/message'
 
 const Header = () => {
   const fromLink = useFromLink()
@@ -127,7 +128,12 @@ const Header = () => {
                     </ListItemIcon>
                     <ListItemText>Security</ListItemText>
                   </ListItemButton>
-                  <ListItemButton onClick={removeToken}>
+                  <ListItemButton
+                    onClick={() => {
+                      Message.info('Log out successfully', 5000)
+                      removeToken()
+                    }}
+                  >
                     <ListItemIcon>
                       <LogoutIcon />
                     </ListItemIcon>
