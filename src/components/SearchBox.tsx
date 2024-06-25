@@ -25,6 +25,7 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
 
   const search = (index?: number) => () => {
     index && setSelectedBtn(index)
+    setFocused(false)
     navigate(`/search?q=${value}&type=${getType(index ?? selectedBtn)}`)
   }
 
@@ -61,7 +62,10 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
           setFocused(false)
           setSelectedBtn(0)
         }}
-        onChange={e => setValue(e.target.value)}
+        onChange={e => {
+          setFocused(true)
+          setValue(e.target.value)
+        }}
         onKeyDown={onKeyDown}
         sx={{ lineHeight: '50px', height: '100%', ml: '15px', mr: '40px' }}
       />

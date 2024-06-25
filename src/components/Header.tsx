@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 import LogoutIcon from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
@@ -20,6 +20,7 @@ import {
 } from '@mui/material'
 
 import Logo from '@/assets/logo.svg?react'
+import SearchBox from '@/components/SearchBox'
 import { useFromLink } from '@/hooks/useFromNavigate'
 import useTokenStore from '@/stores/tokenStore'
 import useUserStore from '@/stores/userStore'
@@ -31,6 +32,10 @@ const Header = () => {
   const needLogin = useTokenStore(state => !state.token)
   const userName = useUserStore(state => state.nickname)
   const removeToken = useTokenStore(state => state.removeToken)
+
+  const location = useLocation()
+
+  const isSearch = () => location.pathname.includes('/search')
 
   const [focused, setFocused] = useState(false)
 
@@ -50,9 +55,12 @@ const Header = () => {
       }}
       color='secondary'
     >
-      <Link to='/home' title='Home page' style={{ marginTop: '10px' }}>
-        <Logo />
-      </Link>
+      <Box display='flex' alignItems='center' width='70%'>
+        <Link to='/home' title='Home page' style={{ marginTop: '10px' }}>
+          <Logo />
+        </Link>
+        {isSearch() && <SearchBox position='relative' />}
+      </Box>
       {needLogin ? (
         <Box sx={{ display: 'inline' }}>
           <Link to={fromLink('/signup')}>
