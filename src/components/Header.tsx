@@ -1,13 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { AppBar, Box, Button } from '@mui/material'
+import LogoutIcon from '@mui/icons-material/Logout'
+import PersonIcon from '@mui/icons-material/Person'
+import SecurityIcon from '@mui/icons-material/Security'
+import StarIcon from '@mui/icons-material/Star'
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Typography
+} from '@mui/material'
 
 import Logo from '@/assets/logo.svg?react'
 import { useFromLink } from '@/hooks/useFromNavigate'
+import useTokenStore from '@/stores/tokenStore'
+import useUserStore from '@/stores/userStore'
 
 const Header = () => {
   const fromLink = useFromLink()
+
+  const needLogin = useTokenStore(state => !state.token)
+  const userName = useUserStore(state => state.nickname)
+  const removeToken = useTokenStore(state => state.removeToken)
+
+  const [focused, setFocused] = useState(false)
 
   return (
     <AppBar
@@ -28,16 +52,93 @@ const Header = () => {
       <Link to='/home' title='Home page' style={{ marginTop: '10px' }}>
         <Logo />
       </Link>
-      <Box sx={{ display: 'inline' }}>
-        <Link to={fromLink('/signup')}>
-          <Button variant='outlined' sx={{ mr: 2 }}>
-            Sign up
-          </Button>
-        </Link>
-        <Link to={fromLink('/login')}>
-          <Button variant='contained'>Log in</Button>
-        </Link>
-      </Box>
+      {needLogin ? (
+        <Box sx={{ display: 'inline' }}>
+          <Link to={fromLink('/signup')}>
+            <Button variant='outlined' sx={{ mr: 2 }}>
+              Sign up
+            </Button>
+          </Link>
+          <Link to={fromLink('/login')}>
+            <Button variant='contained'>Log in</Button>
+          </Link>
+        </Box>
+      ) : (
+        <Box position='relative' onMouseLeave={() => setFocused(false)}>
+          <Box
+            display='flex'
+            justifyContent='center'
+            alignItems='center'
+            pr='10px'
+            onMouseEnter={() => setFocused(true)}
+            sx={{
+              cursor: 'pointer',
+              transition: 'all 0.1s ease-in-out',
+              padding: '10px',
+              borderRadius: '5px',
+              '&:hover': {
+                bgcolor: 'primary.light'
+              }
+            }}
+          >
+            <Avatar>
+              <PersonIcon />
+            </Avatar>
+            <Typography variant='body1' ml='10px'>
+              <b>{userName}</b>
+            </Typography>
+          </Box>
+          <Box
+            position='absolute'
+            left='50%'
+            sx={{
+              transform: 'translateX(-50%)'
+            }}
+          >
+            <Collapse
+              in={focused}
+              orientation='vertical'
+              timeout={150}
+              easing='ease-in-out'
+            >
+              <Paper elevation={3}>
+                <List
+                  sx={{
+                    bgcolor: 'secondary.main',
+                    mt: '20px',
+                    transition: 'all 0.5s ease-in-out'
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <PersonIcon />
+                    </ListItemIcon>
+                    <ListItemText>Profile</ListItemText>
+                  </ListItemButton>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <StarIcon />
+                    </ListItemIcon>
+                    <ListItemText>Collection</ListItemText>
+                  </ListItemButton>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <SecurityIcon />
+                    </ListItemIcon>
+                    <ListItemText>Security</ListItemText>
+                  </ListItemButton>
+                  <ListItemButton onClick={removeToken}>
+                    <ListItemIcon>
+                      <LogoutIcon />
+                    </ListItemIcon>
+                    <ListItemText>Log out</ListItemText>
+                  </ListItemButton>
+                </List>
+              </Paper>
+            </Collapse>
+          </Box>
+        </Box>
+      )}
     </AppBar>
   )
 }
