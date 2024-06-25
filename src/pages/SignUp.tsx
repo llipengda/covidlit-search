@@ -132,6 +132,7 @@ const SignUp = () => {
         content: 'Code has been already sent, please retry in 5 minutes',
         duration: 2000
       })
+      return
     }
     Message.success({ content: 'Verification code sent', duration: 2000 })
     setSendCodeDisabled(true)
