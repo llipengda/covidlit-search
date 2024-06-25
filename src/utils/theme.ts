@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes } from '@mui/material'
+import { createTheme, responsiveFontSizes } from '@mui/material/styles'
 
 export default responsiveFontSizes(
   createTheme({
@@ -9,8 +9,13 @@ export default responsiveFontSizes(
         light: '#b71c1c14'
       },
       secondary: {
-        main: '#ffffff'
-      }
+        main: '#ffffff',
+        contrastText: '#000'
+      },
+      background: {
+        paper: '#00000002'
+      },
+      divider: '#0000003f'
     },
     components: {
       MuiInputBase: {
@@ -42,6 +47,21 @@ export default responsiveFontSizes(
               WebkitTextFillColor: 'inherit',
               caretColor: 'inherit'
             }
+          }
+        }
+      },
+      // @ts-expect-error Property 'MuiDateCalendar' does not exist on type 'Components'.
+      MuiDateCalendar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#fff'
+          }
+        }
+      },
+      MuiList: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#fff'
           }
         }
       }

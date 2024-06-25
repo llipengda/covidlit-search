@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import SearchIcon from '@mui/icons-material/Search'
 import { Box, Collapse, InputBase, List, ListItemButton } from '@mui/material'
@@ -19,14 +19,18 @@ const getType = (selectedBtn: number) => {
 
 const SearchBox: typeof Box = (props: { [key: string]: any }) => {
   const navigate = useNavigate()
-  const [value, setValue] = useState('')
+  const q = useSearchParams()[0].get('q')
+
+  const [value, setValue] = useState(q)
   const [focused, setFocused] = useState(false)
   const [selectedBtn, setSelectedBtn] = useState(0)
 
   const search = (index?: number) => () => {
     index && setSelectedBtn(index)
     setFocused(false)
-    navigate(`/search?q=${value}&type=${getType(index ?? selectedBtn)}`)
+    navigate(
+      `/search?q=${value}&type=${getType(index ?? selectedBtn)}&searchBy=1&allowNoUrl=false`
+    )
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
