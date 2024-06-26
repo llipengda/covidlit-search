@@ -85,6 +85,9 @@ const Search = () => {
   }
 
   const handleClose = () => {
+    if (SearchBy.getNumber(searchByValue) === searchBy) {
+      return
+    }
     setLoading(true)
     setSearchBy(SearchBy.getNumber(searchByValue))
     window.history.pushState(
@@ -105,6 +108,9 @@ const Search = () => {
   }
 
   const handleSortByChange = (value: string) => {
+    if (value === sortBy) {
+      return
+    }
     setSortBy(value as 'publish_time' | 'title' | 'journal_name')
     setLoading(true)
     window.history.pushState(
@@ -115,6 +121,9 @@ const Search = () => {
   }
 
   const handleDescChange = (value: boolean) => {
+    if (value === desc) {
+      return
+    }
     setDesc(value)
     setLoading(true)
     window.history.pushState(
