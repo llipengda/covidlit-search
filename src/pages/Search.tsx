@@ -175,7 +175,7 @@ const Search = () => {
         <Divider orientation='vertical' flexItem />
         <Box width='85%' p='40px' pt='20px'>
           <Typography variant='h5'>
-            <Times>{total.toLocaleString()} Results</Times>
+            <Times>{typeof total === 'number' ? total.toLocaleString() : ''} Results</Times>
           </Typography>
           {isArticle && (
             <Box mt='15px' display='flex' alignItems='center'>

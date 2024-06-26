@@ -43,7 +43,7 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
   const authors = article.authors?.split(';').map(a => a.trim()) ?? []
 
   return (
-    <Box display='flex' width='100%'>
+    <Box display='flex' width='100%' mb='30px'>
       <Box width='80%' mr='40px'>
         <Typography variant='h5'>
           <Upper>
@@ -72,6 +72,11 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
                 </span>
               ))}
             </YaHei>
+          </Typography>
+        )}
+        {article.doi && (
+          <Typography variant='body1' color='GrayText'>
+            <Roboto>DOI: {article.doi}</Roboto>
           </Typography>
         )}
         {article.journalName && (

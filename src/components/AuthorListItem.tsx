@@ -25,7 +25,7 @@ const AuthorListItem: React.FC<AuthorListItemProps> = ({
   keywords
 }) => {
   return (
-    <Box display='flex' width='100%'>
+    <Box display='flex' width='100%' mb='20px'>
       <Box width='80%' mr='40px'>
         <Typography variant='h5'>
           <Upper>
