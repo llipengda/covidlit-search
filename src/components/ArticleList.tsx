@@ -31,15 +31,11 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   useEffect(() => {
     Promise.all([
-      ArticleApi.getArticlesCnt(search, searchBy, allowNoUrl).then(res => {
+      ArticleApi.getArticlesCnt(search, searchBy, allowNoUrl).then(res =>
         setTotal(res.data)
-        console.log('total ok')
-      }),
+      ),
       ArticleApi.getArticles(1, pageSize, search, searchBy, allowNoUrl).then(
-        res => {
-          setArticles(res.data)
-          console.log('articles ok')
-        }
+        res => setArticles(res.data)
       )
     ]).then(() => setLoading(false))
   }, [search, searchBy, setTotal, setLoading, allowNoUrl])
@@ -64,12 +60,15 @@ const ArticleList: React.FC<ArticleListProps> = ({
         alignItems='center'
       >
         <Pagination
+          variant='outlined'
+          color='primary'
           sx={{
             mt: '40px'
           }}
           count={Math.ceil(total / pageSize)}
           page={index}
           onChange={(_, page) => {
+            window.scrollTo(0, 0)
             setIndex(page)
             setLoading(true)
             ArticleApi.getArticles(page, pageSize, search, searchBy).then(
