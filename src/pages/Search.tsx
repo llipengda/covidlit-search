@@ -167,7 +167,7 @@ const Search = () => {
         <Divider orientation='vertical' flexItem />
         <Box width='85%' p='40px' pt='20px'>
           <Typography variant='h5'>
-            <Times>{total} Results</Times>
+            <Times>{total.toLocaleString()} Results</Times>
           </Typography>
           <Box mt='15px' display='flex' alignItems='center'>
             <FormControl size='small' sx={{ width: '15%', mr: '20px' }}>
