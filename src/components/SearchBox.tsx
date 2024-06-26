@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search'
 import { Box, Collapse, InputBase, List, ListItemButton } from '@mui/material'
 
+import sleep from '@/utils/sleep'
+
 const getType = (selectedBtn: number) => {
   switch (selectedBtn) {
     case 0:
@@ -22,6 +24,7 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
   const q = useSearchParams()[0].get('q')
   const searchBy = parseInt(useSearchParams()[0].get('searchBy') || '1')
   const allowNoUrl = useSearchParams()[0].get('allowNoUrl') || false
+  const type = useSearchParams()[0].get('type') || 'article'
 
   const [value, setValue] = useState(q)
   const [focused, setFocused] = useState(false)
@@ -29,10 +32,10 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
 
   const search = (index?: number) => () => {
     index && setSelectedBtn(index)
-    setFocused(false)
     navigate(
       `/search?q=${value}&type=${getType(index ?? selectedBtn)}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}`
     )
+    sleep(200).then(() => setFocused(false))
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -57,6 +60,10 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
       height='50px'
       border='1px solid #ddd'
       bgcolor='secondary.main'
+      onMouseLeave={() => {
+        setFocused(false)
+        setSelectedBtn(type === 'article' ? 0 : type === 'journal' ? 1 : 2)
+      }}
       {...props}
     >
       <InputBase
@@ -64,10 +71,6 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
         placeholder='Search articles, journals, and authors...'
         value={value}
         onFocus={() => setFocused(true)}
-        onBlur={() => {
-          setFocused(false)
-          setSelectedBtn(0)
-        }}
         onChange={e => {
           setFocused(true)
           setValue(e.target.value)

@@ -30,7 +30,10 @@ const JournalList: React.FC<JournalListProps> = ({
       JournalApi.getJournals(search, 1, pageSize).then(res =>
         setJournals(res.data)
       )
-    ]).then(() => setLoading(false))
+    ]).then(
+      () => setLoading(false),
+      () => setLoading(false)
+    )
   }, [search, setTotal, setLoading])
 
   return (
@@ -60,10 +63,13 @@ const JournalList: React.FC<JournalListProps> = ({
             window.scrollTo(0, 0)
             setIndex(page)
             setLoading(true)
-            JournalApi.getJournals(search, page, pageSize).then(res => {
-              setJournals(res.data)
-              setLoading(false)
-            })
+            JournalApi.getJournals(search, page, pageSize).then(
+              res => {
+                setJournals(res.data)
+                setLoading(false)
+              },
+              () => setLoading(false)
+            )
           }}
         />
       </Box>

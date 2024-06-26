@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { Box, Button, Typography, styled } from '@mui/material'
@@ -42,9 +42,18 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
 }) => {
   const authors = article.authors?.split(';').map(a => a.trim()) ?? []
 
+  const navigate = useNavigate()
+
   return (
     <Box display='flex' width='100%' mb='30px'>
-      <Box width='80%' mr='40px'>
+      <Box
+        width='80%'
+        mr='40px'
+        onClick={() => navigate(`/article/${article.id}`)}
+        sx={{
+          cursor: 'pointer'
+        }}
+      >
         <Typography variant='h5'>
           <Upper>
             <Times>

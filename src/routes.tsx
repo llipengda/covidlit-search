@@ -6,6 +6,7 @@ const Search = lazy(() => import('@/pages/Search'))
 const Login = lazy(() => import('@/pages/Login'))
 const SignUp = lazy(() => import('@/pages/SignUp'))
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'))
+const Article = lazy(() => import('@/pages/Article'))
 
 const routes: RouteObject[] = [
   {
@@ -27,6 +28,10 @@ const routes: RouteObject[] = [
   {
     path: 'reset-password',
     element: <ResetPassword />
+  },
+  {
+    path: 'article/:id',
+    element: <Article />
   },
   {
     path: '/',

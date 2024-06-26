@@ -39,10 +39,20 @@ const getArticle = async (id: string) => {
   return await axios.get<Article>(`/articles/${id}`)
 }
 
+const getCites = async (id: string) => {
+  return await axios.get<
+    {
+      id: string
+      title: string
+    }[]
+  >(`/articles/${id}/cites`)
+}
+
 const ArticleApi = {
   getArticles,
   getArticlesCnt,
-  getArticle
+  getArticle,
+  getCites
 }
 
 export default ArticleApi

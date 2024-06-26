@@ -30,7 +30,10 @@ const AuthorList: React.FC<AuthorListProps> = ({
       AuthorApi.getAuthors(search, 1, pageSize).then(res =>
         setAuthors(res.data)
       )
-    ]).then(() => setLoading(false))
+    ]).then(
+      () => setLoading(false),
+      () => setLoading(false)
+    )
   }, [search, setTotal, setLoading])
 
   return (
@@ -60,10 +63,13 @@ const AuthorList: React.FC<AuthorListProps> = ({
             window.scrollTo(0, 0)
             setIndex(page)
             setLoading(true)
-            AuthorApi.getAuthors(search, page, pageSize).then(res => {
-              setAuthors(res.data)
-              setLoading(false)
-            })
+            AuthorApi.getAuthors(search, page, pageSize).then(
+              res => {
+                setAuthors(res.data)
+                setLoading(false)
+              },
+              () => setLoading(false)
+            )
           }}
         />
       </Box>
