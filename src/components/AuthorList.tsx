@@ -51,27 +51,29 @@ const AuthorList: React.FC<AuthorListProps> = ({
         flexDirection='column'
         alignItems='center'
       >
-        <Pagination
-          variant='outlined'
-          color='primary'
-          sx={{
-            mt: '40px'
-          }}
-          count={Math.ceil(total / pageSize)}
-          page={index}
-          onChange={(_, page) => {
-            window.scrollTo(0, 0)
-            setIndex(page)
-            setLoading(true)
-            AuthorApi.getAuthors(search, page, pageSize).then(
-              res => {
-                setAuthors(res.data)
-                setLoading(false)
-              },
-              () => setLoading(false)
-            )
-          }}
-        />
+        {total > pageSize && (
+          <Pagination
+            variant='outlined'
+            color='primary'
+            sx={{
+              mt: '40px'
+            }}
+            count={Math.ceil(total / pageSize)}
+            page={index}
+            onChange={(_, page) => {
+              window.scrollTo(0, 0)
+              setIndex(page)
+              setLoading(true)
+              AuthorApi.getAuthors(search, page, pageSize).then(
+                res => {
+                  setAuthors(res.data)
+                  setLoading(false)
+                },
+                () => setLoading(false)
+              )
+            }}
+          />
+        )}
       </Box>
     </Box>
   )

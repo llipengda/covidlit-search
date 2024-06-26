@@ -8,6 +8,7 @@ import {
   AccordionSummary,
   Box,
   Container,
+  LinearProgress,
   Typography,
   styled
 } from '@mui/material'
@@ -32,6 +33,8 @@ const Journal = () => {
   const name = useParams()['name']!
 
   const [journal, setJournal] = useState<TJournal | null>(null)
+
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     JournalApi.getJournal(name).then(res => setJournal(res.data))
@@ -59,12 +62,18 @@ const Journal = () => {
           )}
         </Box>
         <Box mt='40px'>
+          {loading && <LinearProgress />}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <b>Articles</b>
             </AccordionSummary>
             <AccordionDetails>
-              <ArticleList getFromType='journal' getFrom={name} />
+              <ArticleList
+                getFromType='journal'
+                getFrom={name}
+                loading={loading}
+                setLoading={setLoading}
+              />
             </AccordionDetails>
           </Accordion>
         </Box>

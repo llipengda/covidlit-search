@@ -23,6 +23,8 @@ import {
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 
+import dayjs from 'dayjs'
+
 import ArticleList from '@/components/ArticleList'
 import AuthorList from '@/components/AuthorList'
 import JournalList from '@/components/JournalList'
@@ -41,6 +43,23 @@ const Search = () => {
   const [allowNoUrl, setAllowNoUrl] = useState(
     useSearchParams()[0].get('allowNoUrl') === 'true'
   )
+  const [sortBy, setSortBy] = useState<
+    'publish_time' | 'title' | 'journal_name'
+  >(
+    useSearchParams()[0].get('sortBy') as
+      | 'publish_time'
+      | 'title'
+      | 'journal_name'
+  )
+  const [desc, setDesc] = useState(useSearchParams()[0].get('desc') === 'true')
+  const [from, setFrom] = useState(useSearchParams()[0].get('from') || '')
+  const [to, setTo] = useState(useSearchParams()[0].get('to') || '')
+  const [refine, setRefine] = useState(useSearchParams()[0].get('refine') || '')
+
+  const [fromValue, setFromValue] = useState(from)
+  const [toValue, setToValue] = useState(to)
+
+  const [refineInput, setRefineInput] = useState(refine)
 
   const isArticle = type === 'article'
 
@@ -71,7 +90,7 @@ const Search = () => {
     window.history.pushState(
       null,
       '',
-      `/search?q=${search}&type=${type}&searchBy=${SearchBy.getNumber(searchByValue)}&allowNoUrl=${allowNoUrl}`
+      `/search?q=${search}&type=${type}&searchBy=${SearchBy.getNumber(searchByValue)}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refine}&from=${from}&to=${to}`
     )
   }
 
@@ -81,7 +100,27 @@ const Search = () => {
     window.history.pushState(
       null,
       '',
-      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${!allowNoUrl}`
+      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${!allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refine}&from=${from}&to=${to}`
+    )
+  }
+
+  const handleSortByChange = (value: string) => {
+    setSortBy(value as 'publish_time' | 'title' | 'journal_name')
+    setLoading(true)
+    window.history.pushState(
+      null,
+      '',
+      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${value}&desc=${desc}&refine=${refine}&from=${from}&to=${to}`
+    )
+  }
+
+  const handleDescChange = (value: boolean) => {
+    setDesc(value)
+    setLoading(true)
+    window.history.pushState(
+      null,
+      '',
+      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${value}&refine=${refine}&from=${from}&to=${to}`
     )
   }
 
@@ -97,6 +136,17 @@ const Search = () => {
   const handleLoad = useCallback((value: boolean) => {
     setLoading(value)
   }, [])
+
+  const handleApply = () => {
+    setFrom(fromValue)
+    setTo(toValue)
+    setLoading(true)
+    window.history.pushState(
+      null,
+      '',
+      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refine}&from=${fromValue}&to=${toValue}`
+    )
+  }
 
   return (
     <Box>
@@ -122,8 +172,30 @@ const Search = () => {
               size='small'
               fullWidth
               placeholder='Search within results...'
+              value={refineInput}
+              onChange={e => setRefineInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  setRefine(refineInput)
+                  setLoading(true)
+                  window.history.pushState(
+                    null,
+                    '',
+                    `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refineInput}&from=${from}&to=${to}`
+                  )
+                }
+              }}
             />
             <SearchIcon
+              onClick={() => {
+                setRefine(refineInput)
+                setLoading(true)
+                window.history.pushState(
+                  null,
+                  '',
+                  `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refineInput}&from=${from}&to=${to}`
+                )
+              }}
               sx={{
                 position: 'absolute',
                 color: 'GrayText',
@@ -152,6 +224,10 @@ const Search = () => {
                       size: 'small'
                     }
                   }}
+                  value={dayjs(fromValue)}
+                  onChange={date => {
+                    setFromValue(date?.format('YYYY-MM-DD') || '')
+                  }}
                 />
                 <Typography variant='h6'>
                   <Times>To</Times>
@@ -164,8 +240,16 @@ const Search = () => {
                       size: 'small'
                     }
                   }}
+                  value={dayjs(toValue)}
+                  onChange={date => {
+                    setToValue(date?.format('YYYY-MM-DD') || '')
+                  }}
                 />
-                <Button variant='contained' sx={{ top: '10px' }}>
+                <Button
+                  variant='contained'
+                  sx={{ top: '10px' }}
+                  onClick={handleApply}
+                >
                   Apply
                 </Button>
               </Box>
@@ -201,15 +285,36 @@ const Search = () => {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl size='small' sx={{ width: '10%', mr: '20px' }}>
+              <FormControl size='small' sx={{ width: '15%', mr: '20px' }}>
                 <InputLabel>Sort by</InputLabel>
-                <Select label='Sort by' defaultValue={0}>
-                  <MenuItem value={0}>
-                    <i>None</i>
-                  </MenuItem>
-                  <MenuItem value={1}>Title</MenuItem>
-                  <MenuItem value={2}>Author</MenuItem>
-                  <MenuItem value={4}>Journal</MenuItem>
+                <Select
+                  label='Sort by'
+                  defaultValue={'publish_time'}
+                  value={sortBy}
+                  onChange={e =>
+                    handleSortByChange(
+                      e.target.value as
+                        | 'publish_time'
+                        | 'title'
+                        | 'journal_name'
+                    )
+                  }
+                >
+                  <MenuItem value={'publish_time'}>Publish time</MenuItem>
+                  <MenuItem value={'title'}>Title</MenuItem>
+                  <MenuItem value={'journal_name'}>Journal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl size='small' sx={{ width: '15%', mr: '20px' }}>
+                <InputLabel>Order</InputLabel>
+                <Select
+                  label='Order'
+                  defaultValue={1}
+                  value={desc ? 1 : 0}
+                  onChange={e => handleDescChange(!!e.target.value)}
+                >
+                  <MenuItem value={0}>Ascending</MenuItem>
+                  <MenuItem value={1}>Descending</MenuItem>
                 </Select>
               </FormControl>
               <FormControlLabel
@@ -223,6 +328,9 @@ const Search = () => {
           <Box mt='20px'>
             {type === 'article' ? (
               <ArticleList
+                refine={refine}
+                sortBy={sortBy}
+                desc={desc}
                 loading={loading}
                 search={search}
                 searchBy={searchBy}
@@ -231,6 +339,8 @@ const Search = () => {
                 setTotal={handleSetTotal}
                 setLoading={handleLoad}
                 getFromType='search'
+                from={from}
+                to={to}
               />
             ) : type === 'journal' ? (
               <JournalList

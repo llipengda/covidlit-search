@@ -8,6 +8,7 @@ import {
   AccordionSummary,
   Box,
   Container,
+  LinearProgress,
   Typography,
   styled
 } from '@mui/material'
@@ -32,6 +33,8 @@ const Author = () => {
   const name = useParams()['name']!
 
   const [author, setAuthor] = useState<TAuthor | null>(null)
+
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     AuthorApi.getAuthor(name).then(res => setAuthor(res.data))
@@ -113,6 +116,7 @@ const Author = () => {
               </AccordionDetails>
             </Accordion>
           )}
+          {loading && <LinearProgress />}
           <Accordion
             defaultExpanded={
               !author.email &&
@@ -125,7 +129,12 @@ const Author = () => {
               <b>Articles</b>
             </AccordionSummary>
             <AccordionDetails>
-              <ArticleList getFromType='author' getFrom={name} />
+              <ArticleList
+                getFromType='author'
+                getFrom={name}
+                loading={loading}
+                setLoading={setLoading}
+              />
             </AccordionDetails>
           </Accordion>
         </Box>

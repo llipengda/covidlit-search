@@ -43,7 +43,9 @@ const Article = () => {
   const id = useParams()['id']!
 
   const [article, setArticle] = useState<TArticle | null>(null)
-  const [cites, setCites] = useState<{ id: string; title: string }[]>([])
+  const [cites, setCites] = useState<
+    { id: string; title: string; flag: number }[]
+  >([])
 
   useEffect(() => {
     ArticleApi.getArticle(id).then(res => setArticle(res.data))
@@ -176,7 +178,10 @@ const Article = () => {
                 {cites.map(cite => (
                   <Typography key={cite.id}>
                     <Link to={`/article/${cite.id}`}>
-                      <MLink>{cite.title}</MLink>
+                      <MLink>
+                        {cite.flag ? '[INDIRECT] ' : ''}
+                        {cite.title}
+                      </MLink>
                     </Link>
                   </Typography>
                 ))}

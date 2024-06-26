@@ -51,27 +51,29 @@ const JournalList: React.FC<JournalListProps> = ({
         flexDirection='column'
         alignItems='center'
       >
-        <Pagination
-          variant='outlined'
-          color='primary'
-          sx={{
-            mt: '40px'
-          }}
-          count={Math.ceil(total / pageSize)}
-          page={index}
-          onChange={(_, page) => {
-            window.scrollTo(0, 0)
-            setIndex(page)
-            setLoading(true)
-            JournalApi.getJournals(search, page, pageSize).then(
-              res => {
-                setJournals(res.data)
-                setLoading(false)
-              },
-              () => setLoading(false)
-            )
-          }}
-        />
+        {total > pageSize && (
+          <Pagination
+            variant='outlined'
+            color='primary'
+            sx={{
+              mt: '40px'
+            }}
+            count={Math.ceil(total / pageSize)}
+            page={index}
+            onChange={(_, page) => {
+              window.scrollTo(0, 0)
+              setIndex(page)
+              setLoading(true)
+              JournalApi.getJournals(search, page, pageSize).then(
+                res => {
+                  setJournals(res.data)
+                  setLoading(false)
+                },
+                () => setLoading(false)
+              )
+            }}
+          />
+        )}
       </Box>
     </Box>
   )

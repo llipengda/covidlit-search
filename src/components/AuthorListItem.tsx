@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+
 import { Box, Typography, styled } from '@mui/material'
 
 import HighlightText from '@/components/HighlightText'
@@ -24,9 +26,16 @@ const AuthorListItem: React.FC<AuthorListItemProps> = ({
   author,
   keywords
 }) => {
+  const navigate = useNavigate()
+
   return (
     <Box display='flex' width='100%' mb='20px'>
-      <Box width='80%' mr='40px'>
+      <Box
+        width='80%'
+        mr='40px'
+        onClick={() => navigate(`/author/${author.name}`)}
+        sx={{ cursor: 'pointer' }}
+      >
         <Typography variant='h5'>
           <Upper>
             <Times>

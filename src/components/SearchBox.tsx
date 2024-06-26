@@ -33,7 +33,7 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
   const search = (index?: number) => () => {
     index && setSelectedBtn(index)
     navigate(
-      `/search?q=${value}&type=${getType(index ?? selectedBtn)}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}`
+      `/search?q=${value}&type=${getType(index ?? selectedBtn)}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=publish_time&desc=true`
     )
     sleep(200).then(() => setFocused(false))
   }

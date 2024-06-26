@@ -10,14 +10,15 @@ import {
 } from '@mui/material'
 
 import ArticleApi from '@/api/Article'
+import AuthorApi from '@/api/Author'
 import JournalApi from '@/api/Journal'
 import ArticleListItem from '@/components/ArticleListItem'
 import type Article from '@/types/Article'
 import type ArticleSearchBy from '@/types/ArticleSearchBy'
-import AuthorApi from '@/api/Author'
 
 type ArticleListProps =
   | {
+      sortBy: string
       search: string
       searchBy: ArticleSearchBy
       total: number
@@ -27,17 +28,26 @@ type ArticleListProps =
       setLoading: (loading: boolean) => void
       getFromType: 'search'
       getFrom?: never
+      desc?: boolean
+      refine?: string
+      from?: string
+      to?: string
     }
   | {
+      desc?: boolean
+      sortBy?: string
       search?: string
       searchBy?: ArticleSearchBy
       allowNoUrl?: boolean
       total?: number
-      loading?: boolean
+      loading: boolean
       setTotal?: (total: number) => void
-      setLoading?: (loading: boolean) => void
+      setLoading: (loading: boolean) => void
       getFromType: 'journal' | 'author'
       getFrom: string
+      refine?: never
+      from?: never
+      to?: never
     }
 
 const ArticleSkeleton = () => {
@@ -78,7 +88,12 @@ const ArticleList: React.FC<ArticleListProps> = ({
   setTotal,
   setLoading,
   getFromType,
-  getFrom
+  getFrom,
+  sortBy = 'publish_time',
+  desc = true,
+  refine,
+  from,
+  to
 }) => {
   const [articles, setArticles] = useState<Article[]>([])
   const [index, setIndex] = useState(1)
@@ -87,28 +102,55 @@ const ArticleList: React.FC<ArticleListProps> = ({
     if (getFromType === 'search') {
       setArticles([])
       Promise.all([
-        ArticleApi.getArticlesCnt(search, searchBy, allowNoUrl).then(res =>
-          setTotal(res.data)
-        ),
-        ArticleApi.getArticles(1, pageSize, search, searchBy, allowNoUrl).then(
-          res => setArticles(res.data)
-        )
+        ArticleApi.getArticlesCnt(
+          search,
+          searchBy,
+          allowNoUrl,
+          refine,
+          from,
+          to
+        ).then(res => setTotal(res.data)),
+        ArticleApi.getArticles(
+          1,
+          pageSize,
+          search,
+          searchBy,
+          sortBy,
+          desc,
+          allowNoUrl,
+          refine,
+          from,
+          to
+        ).then(res => setArticles(res.data))
       ]).then(
         () => setLoading(false),
         () => setLoading(false)
       )
     } else if (getFromType === 'journal') {
-      JournalApi.getArticles(getFrom, 1, 10000).then(res => {
+      JournalApi.getArticles(getFrom, 1, pageSize).then(res => {
         setArticles(res.data)
         setLoading && setLoading(false)
       })
     } else {
-      AuthorApi.getArticles(getFrom, 1, 10000).then(res => {
+      AuthorApi.getArticles(getFrom, 1, pageSize).then(res => {
         setArticles(res.data)
         setLoading && setLoading(false)
       })
     }
-  }, [search, searchBy, setTotal, setLoading, allowNoUrl, getFromType, getFrom])
+  }, [
+    search,
+    searchBy,
+    setTotal,
+    setLoading,
+    allowNoUrl,
+    getFromType,
+    getFrom,
+    sortBy,
+    desc,
+    refine,
+    from,
+    to
+  ])
 
   return (
     <Box>
@@ -133,37 +175,66 @@ const ArticleList: React.FC<ArticleListProps> = ({
           </>
         )}
       </List>
-      {getFromType === 'search' && (
-        <Box
-          width='80%'
-          display='flex'
-          flexDirection='column'
-          alignItems='center'
-        >
+      <Box
+        width='80%'
+        display='flex'
+        flexDirection='column'
+        alignItems='center'
+      >
+        {(total === undefined || total > pageSize) && (
           <Pagination
             variant='outlined'
             color='primary'
             sx={{
               mt: '40px'
             }}
-            count={Math.ceil(total / pageSize)}
+            count={total ? Math.ceil(total / pageSize) : NaN}
             page={index}
             onChange={(_, page) => {
               window.scrollTo(0, 0)
               setIndex(page)
               setLoading(true)
               setArticles([])
-              ArticleApi.getArticles(page, pageSize, search, searchBy).then(
-                res => {
-                  setArticles(res.data)
-                  setLoading(false)
-                },
-                () => setLoading(false)
-              )
+              if (getFromType === 'search') {
+                ArticleApi.getArticles(
+                  page,
+                  pageSize,
+                  search,
+                  searchBy,
+                  sortBy,
+                  desc,
+                  allowNoUrl,
+                  refine,
+                  from,
+                  to
+                ).then(
+                  res => {
+                    setArticles(res.data)
+                    setLoading(false)
+                  },
+                  () => setLoading(false)
+                )
+              } else if (getFromType === 'journal') {
+                JournalApi.getArticles(getFrom, page, pageSize).then(
+                  res => {
+                    setArticles(res.data)
+                    setLoading && setLoading(false)
+                  },
+                  () => setLoading && setLoading(false)
+                )
+              } else {
+                AuthorApi.getArticles(getFrom, page, pageSize).then(
+                  res => {
+                    setArticles(res.data)
+                    setLoading && setLoading(false)
+                  },
+                  () => setLoading && setLoading(false)
+                )
+              }
             }}
           />
-        </Box>
-      )}
+        )}
+      </Box>
     </Box>
   )
 }

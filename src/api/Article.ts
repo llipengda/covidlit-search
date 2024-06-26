@@ -8,7 +8,12 @@ const getArticles = async (
   pageSize: number,
   search: string,
   searchBy: ArticleSearchBy,
-  allowNoUrl: boolean = false
+  orderBy: string = 'publish_time',
+  desc: boolean = true,
+  allowNoUrl: boolean = false,
+  refine?: string,
+  from?: string,
+  to?: string
 ) => {
   return await axios.get<Article[]>(`/articles`, {
     params: {
@@ -16,7 +21,12 @@ const getArticles = async (
       pageSize,
       search,
       searchBy,
-      allowNoUrl
+      allowNoUrl,
+      orderBy,
+      desc,
+      refine,
+      from,
+      to
     }
   })
 }
@@ -24,13 +34,19 @@ const getArticles = async (
 const getArticlesCnt = async (
   search: string,
   searchBy: ArticleSearchBy,
-  allowNoUrl: boolean = false
+  allowNoUrl: boolean = false,
+  refine?: string,
+  from?: string,
+  to?: string
 ) => {
   return await axios.get<number>(`/articles/count`, {
     params: {
       search,
       searchBy,
-      allowNoUrl
+      allowNoUrl,
+      refine,
+      from,
+      to
     }
   })
 }
@@ -44,6 +60,7 @@ const getCites = async (id: string) => {
     {
       id: string
       title: string
+      flag: number
     }[]
   >(`/articles/${id}/cites`)
 }
