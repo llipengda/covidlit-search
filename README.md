@@ -1,30 +1,55 @@
-# React + TypeScript + Vite
+# CovidLit Search (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## :book: Description
 
-Currently, two official plugins are available:
+This is the frontend of the CovidLit Search project. It is a web application that allows users to search for scientific articles related to COVID-19. The articles are retrieved from the [COVID-19 Open Research Dataset (CORD-19)](https://www.kaggle.com/datasets/allen-institute-for-ai/CORD-19-research-challenge). The frontend is built using [React](https://reactjs.org/) and [Material-UI](https://material-ui.com/).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+We have deployed the frontend on [Vercel](https://vercel.com/). You can access the deployed version [here](https://covidlit-search.vercel.app/) or [here](https://covidlit-search.pdli.site).
 
-## Expanding the ESLint configuration
+## :rocket: Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Using Vercel
 
-- Configure the top-level `parserOptions` property like this:
+1. Fork this repository.
+2. Go to the [Vercel website](https://vercel.com/).
+3. Click on the "Import Project" button.
+4. Select the forked repository.
+5. Configure the project settings.
+   - **Environment Variables**: You can set the environment variables in the Vercel dashboard. This following environment variable is **required**:
+     - `SERVER_URL`: The URL of the backend API.
+6. Click on the "Deploy" button.
+7. Enjoy
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+### Using Local Development
+
+1. Clone this repository.
+
+```bash
+git clone https://github.com/llipengda/covidlit-search.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Install the dependencies.
+
+```bash
+cd covidlit-search
+pnpm install
+```
+
+3. Set the environment variable.
+
+```bash
+export SERVER_URL=https://your-backend-api-url
+```
+
+4. Start the development server.
+
+```bash
+pnpm run dev
+```
+
+## :link: Links
+
+- [Backend Repository](https://github.com/llipengda/covidlit-search-backend)
+- [Vercel Deployment](https://covidlit-search.vercel.app/)
+- [Custom Domain Deployment](https://covidlit-search.pdli.site/)
+- [CORD-19 Dataset](https://www.kaggle.com/datasets/allen-institute-for-ai/CORD-19-research-challenge)
