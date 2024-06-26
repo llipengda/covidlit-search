@@ -123,7 +123,11 @@ const Article = () => {
                 <b>Journal</b>
               </AccordionSummary>
               <AccordionDetails>
-                {article.journalName}
+                <Link to={`/journal/${article.journalName}`}>
+                  <MLink>
+                    <em>{article.journalName}</em>
+                  </MLink>
+                </Link>
                 {article.volume && ` ${article.volume}`}
                 {article.pages && ` ${article.pages}`}
               </AccordionDetails>

@@ -230,6 +230,7 @@ const Search = () => {
                 total={total}
                 setTotal={handleSetTotal}
                 setLoading={handleLoad}
+                getFromType='search'
               />
             ) : type === 'journal' ? (
               <JournalList

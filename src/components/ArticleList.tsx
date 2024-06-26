@@ -10,19 +10,34 @@ import {
 } from '@mui/material'
 
 import ArticleApi from '@/api/Article'
+import JournalApi from '@/api/Journal'
 import ArticleListItem from '@/components/ArticleListItem'
 import type Article from '@/types/Article'
 import type ArticleSearchBy from '@/types/ArticleSearchBy'
 
-interface ArticleListProps {
-  search: string
-  searchBy: ArticleSearchBy
-  total: number
-  allowNoUrl: boolean
-  loading: boolean
-  setTotal: (total: number) => void
-  setLoading: (loading: boolean) => void
-}
+type ArticleListProps =
+  | {
+      search: string
+      searchBy: ArticleSearchBy
+      total: number
+      allowNoUrl: boolean
+      loading: boolean
+      setTotal: (total: number) => void
+      setLoading: (loading: boolean) => void
+      getFromType: 'search'
+      getFrom?: never
+    }
+  | {
+      search?: string
+      searchBy?: ArticleSearchBy
+      allowNoUrl?: boolean
+      total?: number
+      loading?: boolean
+      setTotal?: (total: number) => void
+      setLoading?: (loading: boolean) => void
+      getFromType: 'journal' | 'author'
+      getFrom: string
+    }
 
 const ArticleSkeleton = () => {
   return (
@@ -60,25 +75,34 @@ const ArticleList: React.FC<ArticleListProps> = ({
   allowNoUrl,
   loading,
   setTotal,
-  setLoading
+  setLoading,
+  getFromType,
+  getFrom
 }) => {
   const [articles, setArticles] = useState<Article[]>([])
   const [index, setIndex] = useState(1)
 
   useEffect(() => {
-    setArticles([])
-    Promise.all([
-      ArticleApi.getArticlesCnt(search, searchBy, allowNoUrl).then(res =>
-        setTotal(res.data)
-      ),
-      ArticleApi.getArticles(1, pageSize, search, searchBy, allowNoUrl).then(
-        res => setArticles(res.data)
+    if (getFromType === 'search') {
+      setArticles([])
+      Promise.all([
+        ArticleApi.getArticlesCnt(search, searchBy, allowNoUrl).then(res =>
+          setTotal(res.data)
+        ),
+        ArticleApi.getArticles(1, pageSize, search, searchBy, allowNoUrl).then(
+          res => setArticles(res.data)
+        )
+      ]).then(
+        () => setLoading(false),
+        () => setLoading(false)
       )
-    ]).then(
-      () => setLoading(false),
-      () => setLoading(false)
-    )
-  }, [search, searchBy, setTotal, setLoading, allowNoUrl])
+    } else if (getFromType === 'journal') {
+      JournalApi.getArticles(getFrom, 1, 10000).then(res => {
+        setArticles(res.data)
+        setLoading && setLoading(false)
+      })
+    }
+  }, [search, searchBy, setTotal, setLoading, allowNoUrl, getFromType, getFrom])
 
   return (
     <Box>
@@ -88,8 +112,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
             <ListItem key={article.id + article.journalName}>
               <ArticleListItem
                 article={article}
-                keywords={[search]}
-                searchBy={searchBy}
+                keywords={search ? [search] : []}
+                searchBy={searchBy ?? 1}
               />
             </ListItem>
           ))
@@ -103,35 +127,37 @@ const ArticleList: React.FC<ArticleListProps> = ({
           </>
         )}
       </List>
-      <Box
-        width='80%'
-        display='flex'
-        flexDirection='column'
-        alignItems='center'
-      >
-        <Pagination
-          variant='outlined'
-          color='primary'
-          sx={{
-            mt: '40px'
-          }}
-          count={Math.ceil(total / pageSize)}
-          page={index}
-          onChange={(_, page) => {
-            window.scrollTo(0, 0)
-            setIndex(page)
-            setLoading(true)
-            setArticles([])
-            ArticleApi.getArticles(page, pageSize, search, searchBy).then(
-              res => {
-                setArticles(res.data)
-                setLoading(false)
-              },
-              () => setLoading(false)
-            )
-          }}
-        />
-      </Box>
+      {getFromType === 'search' && (
+        <Box
+          width='80%'
+          display='flex'
+          flexDirection='column'
+          alignItems='center'
+        >
+          <Pagination
+            variant='outlined'
+            color='primary'
+            sx={{
+              mt: '40px'
+            }}
+            count={Math.ceil(total / pageSize)}
+            page={index}
+            onChange={(_, page) => {
+              window.scrollTo(0, 0)
+              setIndex(page)
+              setLoading(true)
+              setArticles([])
+              ArticleApi.getArticles(page, pageSize, search, searchBy).then(
+                res => {
+                  setArticles(res.data)
+                  setLoading(false)
+                },
+                () => setLoading(false)
+              )
+            }}
+          />
+        </Box>
+      )}
     </Box>
   )
 }
