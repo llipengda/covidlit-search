@@ -138,7 +138,7 @@ const Search = () => {
   }, [])
 
   const handleApply = () => {
-    if (!fromValue || !toValue) {
+    if (!fromValue || !toValue || (fromValue === from && toValue === to)) {
       return
     }
     setFrom(fromValue)
@@ -179,7 +179,7 @@ const Search = () => {
               onChange={e => setRefineInput(e.target.value)}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
-                  if (!refineInput) {
+                  if (!refineInput || refineInput === refine) {
                     return
                   }
                   setRefine(refineInput)
@@ -194,7 +194,7 @@ const Search = () => {
             />
             <SearchIcon
               onClick={() => {
-                if (!refineInput) {
+                if (!refineInput || refineInput === refine) {
                   return
                 }
                 setRefine(refineInput)
