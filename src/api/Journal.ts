@@ -3,20 +3,27 @@ import axios from 'axios'
 import type Article from '@/types/Article'
 import type Journal from '@/types/Journal'
 
-const getJournals = async (search: string, page: number, pageSize: number) => {
+const getJournals = async (
+  search: string,
+  page: number,
+  pageSize: number,
+  refine?: string
+) => {
   return await axios.get<Journal[]>('/journals', {
     params: {
       search,
       page,
-      pageSize
+      pageSize,
+      refine
     }
   })
 }
 
-const getJournalsCnt = async (search: string) => {
+const getJournalsCnt = async (search: string, refine?: string) => {
   return await axios.get<number>('/journals/count', {
     params: {
-      search
+      search,
+      refine
     }
   })
 }

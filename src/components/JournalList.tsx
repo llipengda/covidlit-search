@@ -11,13 +11,15 @@ interface JournalListProps {
   total: number
   setTotal: (total: number) => void
   setLoading: (loading: boolean) => void
+  refine?: string
 }
 
 const JournalList: React.FC<JournalListProps> = ({
   search,
   total,
   setTotal,
-  setLoading
+  setLoading,
+  refine
 }) => {
   const pageSize = 20
 
@@ -26,15 +28,15 @@ const JournalList: React.FC<JournalListProps> = ({
 
   useEffect(() => {
     Promise.all([
-      JournalApi.getJournalsCnt(search).then(res => setTotal(res.data)),
-      JournalApi.getJournals(search, 1, pageSize).then(res =>
+      JournalApi.getJournalsCnt(search, refine).then(res => setTotal(res.data)),
+      JournalApi.getJournals(search, 1, pageSize, refine).then(res =>
         setJournals(res.data)
       )
     ]).then(
       () => setLoading(false),
       () => setLoading(false)
     )
-  }, [search, setTotal, setLoading])
+  }, [search, setTotal, setLoading, refine])
 
   return (
     <Box>
@@ -64,7 +66,7 @@ const JournalList: React.FC<JournalListProps> = ({
               window.scrollTo(0, 0)
               setIndex(page)
               setLoading(true)
-              JournalApi.getJournals(search, page, pageSize).then(
+              JournalApi.getJournals(search, page, pageSize, refine).then(
                 res => {
                   setJournals(res.data)
                   setLoading(false)

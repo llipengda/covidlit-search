@@ -349,6 +349,7 @@ const Search = () => {
                 total={total}
                 setTotal={handleSetTotal}
                 setLoading={handleLoad}
+                refine={refine}
               />
             ) : (
               <AuthorList
@@ -356,6 +357,7 @@ const Search = () => {
                 total={total}
                 setTotal={handleSetTotal}
                 setLoading={handleLoad}
+                refine={refine}
               />
             )}
           </Box>

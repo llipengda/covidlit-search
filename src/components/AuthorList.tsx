@@ -11,13 +11,15 @@ interface AuthorListProps {
   total: number
   setTotal: (total: number) => void
   setLoading: (loading: boolean) => void
+  refine?: string
 }
 
 const AuthorList: React.FC<AuthorListProps> = ({
   search,
   total,
   setTotal,
-  setLoading
+  setLoading,
+  refine
 }) => {
   const pageSize = 20
 
@@ -26,15 +28,15 @@ const AuthorList: React.FC<AuthorListProps> = ({
 
   useEffect(() => {
     Promise.all([
-      AuthorApi.getAuthorsCnt(search).then(res => setTotal(res.data)),
-      AuthorApi.getAuthors(search, 1, pageSize).then(res =>
+      AuthorApi.getAuthorsCnt(search, refine).then(res => setTotal(res.data)),
+      AuthorApi.getAuthors(search, 1, pageSize, refine).then(res =>
         setAuthors(res.data)
       )
     ]).then(
       () => setLoading(false),
       () => setLoading(false)
     )
-  }, [search, setTotal, setLoading])
+  }, [search, setTotal, setLoading, refine])
 
   return (
     <Box>
@@ -64,7 +66,7 @@ const AuthorList: React.FC<AuthorListProps> = ({
               window.scrollTo(0, 0)
               setIndex(page)
               setLoading(true)
-              AuthorApi.getAuthors(search, page, pageSize).then(
+              AuthorApi.getAuthors(search, page, pageSize, refine).then(
                 res => {
                   setAuthors(res.data)
                   setLoading(false)

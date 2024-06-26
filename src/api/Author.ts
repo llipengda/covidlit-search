@@ -3,20 +3,27 @@ import axios from 'axios'
 import type Article from '@/types/Article'
 import type Author from '@/types/Author'
 
-const getAuthors = async (search: string, page: number, pageSize: number) => {
+const getAuthors = async (
+  search: string,
+  page: number,
+  pageSize: number,
+  refine?: string
+) => {
   return await axios.get<Author[]>('/authors', {
     params: {
       search,
       page,
-      pageSize
+      pageSize,
+      refine
     }
   })
 }
 
-const getAuthorsCnt = async (search: string) => {
+const getAuthorsCnt = async (search: string, refine?: string) => {
   return await axios.get<number>('/authors/count', {
     params: {
-      search
+      search,
+      refine
     }
   })
 }
