@@ -24,6 +24,8 @@ import {
 import { DatePicker } from '@mui/x-date-pickers'
 
 import ArticleList from '@/components/ArticleList'
+import AuthorList from '@/components/AuthorList'
+import JournalList from '@/components/JournalList'
 import SearchBy from '@/utils/SearchBy'
 
 const Times = styled('span')({
@@ -39,6 +41,8 @@ const Search = () => {
   const [allowNoUrl, setAllowNoUrl] = useState(
     useSearchParams()[0].get('allowNoUrl') === 'true'
   )
+
+  const isArticle = type === 'article'
 
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -130,90 +134,110 @@ const Search = () => {
               }}
             />
           </Box>
-          <Divider flexItem sx={{ mt: '20px', mb: '10px' }} />
-          <Box>
-            <Typography variant='h5'>
-              <Times>Date</Times>
-            </Typography>
-            <Typography variant='h6'>
-              <Times>From</Times>
-            </Typography>
-            <DatePicker
-              format='YYYY-MM-DD'
-              sx={{ mt: '10px', mb: '10px' }}
-              slotProps={{
-                textField: {
-                  size: 'small'
-                }
-              }}
-            />
-            <Typography variant='h6'>
-              <Times>To</Times>
-            </Typography>
-            <DatePicker
-              sx={{ mt: '10px', mb: '10px' }}
-              format='YYYY-MM-DD'
-              slotProps={{
-                textField: {
-                  size: 'small'
-                }
-              }}
-            />
-            <Button variant='contained' sx={{ top: '10px' }}>
-              Apply
-            </Button>
-          </Box>
+          {isArticle && (
+            <>
+              <Divider flexItem sx={{ mt: '20px', mb: '10px' }} />
+              <Box>
+                <Typography variant='h5'>
+                  <Times>Date</Times>
+                </Typography>
+                <Typography variant='h6'>
+                  <Times>From</Times>
+                </Typography>
+                <DatePicker
+                  format='YYYY-MM-DD'
+                  sx={{ mt: '10px', mb: '10px' }}
+                  slotProps={{
+                    textField: {
+                      size: 'small'
+                    }
+                  }}
+                />
+                <Typography variant='h6'>
+                  <Times>To</Times>
+                </Typography>
+                <DatePicker
+                  sx={{ mt: '10px', mb: '10px' }}
+                  format='YYYY-MM-DD'
+                  slotProps={{
+                    textField: {
+                      size: 'small'
+                    }
+                  }}
+                />
+                <Button variant='contained' sx={{ top: '10px' }}>
+                  Apply
+                </Button>
+              </Box>
+            </>
+          )}
         </Box>
         <Divider orientation='vertical' flexItem />
         <Box width='85%' p='40px' pt='20px'>
           <Typography variant='h5'>
             <Times>{total.toLocaleString()} Results</Times>
           </Typography>
-          <Box mt='15px' display='flex' alignItems='center'>
-            <FormControl size='small' sx={{ width: '15%', mr: '20px' }}>
-              <InputLabel>Search by</InputLabel>
-              <Select
-                labelId='demo-multiple-checkbox-label'
-                id='demo-multiple-checkbox'
-                multiple
-                value={searchByValue}
-                onChange={handleChange}
-                input={<OutlinedInput label='Search by' />}
-                renderValue={selected => selected.join(', ')}
-                onClose={handleClose}
-              >
-                {searchByOptions.map(s => (
-                  <MenuItem key={s} value={s}>
-                    <Checkbox checked={searchByValue.indexOf(s) > -1} />
-                    <ListItemText primary={s} />
+          {isArticle && (
+            <Box mt='15px' display='flex' alignItems='center'>
+              <FormControl size='small' sx={{ width: '15%', mr: '20px' }}>
+                <InputLabel>Search by</InputLabel>
+                <Select
+                  labelId='demo-multiple-checkbox-label'
+                  id='demo-multiple-checkbox'
+                  multiple
+                  value={searchByValue}
+                  onChange={handleChange}
+                  input={<OutlinedInput label='Search by' />}
+                  renderValue={selected => selected.join(', ')}
+                  onClose={handleClose}
+                >
+                  {searchByOptions.map(s => (
+                    <MenuItem key={s} value={s}>
+                      <Checkbox checked={searchByValue.indexOf(s) > -1} />
+                      <ListItemText primary={s} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl size='small' sx={{ width: '10%', mr: '20px' }}>
+                <InputLabel>Sort by</InputLabel>
+                <Select label='Sort by' defaultValue={0}>
+                  <MenuItem value={0}>
+                    <i>None</i>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl size='small' sx={{ width: '10%', mr: '20px' }}>
-              <InputLabel>Sort by</InputLabel>
-              <Select label='Sort by' defaultValue={0}>
-                <MenuItem value={0}>
-                  <i>None</i>
-                </MenuItem>
-                <MenuItem value={1}>Title</MenuItem>
-                <MenuItem value={2}>Author</MenuItem>
-                <MenuItem value={4}>Journal</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControlLabel
-              control={
-                <Switch checked={allowNoUrl} onChange={handleSwitchChange} />
-              }
-              label='Show inaccessible articles'
-            />
-          </Box>
+                  <MenuItem value={1}>Title</MenuItem>
+                  <MenuItem value={2}>Author</MenuItem>
+                  <MenuItem value={4}>Journal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControlLabel
+                control={
+                  <Switch checked={allowNoUrl} onChange={handleSwitchChange} />
+                }
+                label='Show inaccessible articles'
+              />
+            </Box>
+          )}
           <Box mt='20px'>
-            {type === 'article' && (
+            {type === 'article' ? (
               <ArticleList
                 search={search}
                 searchBy={searchBy}
                 allowNoUrl={allowNoUrl}
+                total={total}
+                setTotal={handleSetTotal}
+                setLoading={handleLoad}
+              />
+            ) : type === 'journal' ? (
+              <JournalList
+                search={search}
+                total={total}
+                setTotal={handleSetTotal}
+                setLoading={handleLoad}
+              />
+            ) : (
+              <AuthorList
+                search={search}
                 total={total}
                 setTotal={handleSetTotal}
                 setLoading={handleLoad}
