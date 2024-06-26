@@ -158,7 +158,11 @@ const Article = () => {
               </AccordionSummary>
               <AccordionDetails>
                 {authors.map((author, index) => (
-                  <Typography key={index}>{author}</Typography>
+                  <Typography key={index}>
+                    <Link to={`/author/${author}`}>
+                      <MLink>{author}</MLink>
+                    </Link>
+                  </Typography>
                 ))}
               </AccordionDetails>
             </Accordion>

@@ -8,6 +8,7 @@ const SignUp = lazy(() => import('@/pages/SignUp'))
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'))
 const Article = lazy(() => import('@/pages/Article'))
 const Journal = lazy(() => import('@/pages/Journal'))
+const Author = lazy(() => import('@/pages/Author'))
 
 const routes: RouteObject[] = [
   {
@@ -37,6 +38,10 @@ const routes: RouteObject[] = [
   {
     path: 'journal/:name',
     element: <Journal />
+  },
+  {
+    path: 'author/:name',
+    element: <Author />
   },
   {
     path: '/',

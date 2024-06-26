@@ -14,6 +14,7 @@ import JournalApi from '@/api/Journal'
 import ArticleListItem from '@/components/ArticleListItem'
 import type Article from '@/types/Article'
 import type ArticleSearchBy from '@/types/ArticleSearchBy'
+import AuthorApi from '@/api/Author'
 
 type ArticleListProps =
   | {
@@ -98,6 +99,11 @@ const ArticleList: React.FC<ArticleListProps> = ({
       )
     } else if (getFromType === 'journal') {
       JournalApi.getArticles(getFrom, 1, 10000).then(res => {
+        setArticles(res.data)
+        setLoading && setLoading(false)
+      })
+    } else {
+      AuthorApi.getArticles(getFrom, 1, 10000).then(res => {
         setArticles(res.data)
         setLoading && setLoading(false)
       })

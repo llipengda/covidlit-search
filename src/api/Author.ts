@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+import type Article from '@/types/Article'
 import type Author from '@/types/Author'
 
 const getAuthors = async (search: string, page: number, pageSize: number) => {
@@ -24,10 +25,21 @@ const getAuthor = async (name: string) => {
   return await axios.get<Author>(`/authors/${name}`)
 }
 
+const getArticles = async (name: string, page: number, pageSize: number) => {
+  return await axios.get<Article[]>(`/authors/${name}/articles`, {
+    params: {
+      name,
+      page,
+      pageSize
+    }
+  })
+}
+
 const AuthorApi = {
   getAuthors,
   getAuthorsCnt,
-  getAuthor
+  getAuthor,
+  getArticles
 }
 
 export default AuthorApi
