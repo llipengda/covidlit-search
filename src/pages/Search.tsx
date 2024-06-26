@@ -260,7 +260,8 @@ const Search = () => {
         <Box width='85%' p='40px' pt='20px'>
           <Typography variant='h5'>
             <Times>
-              {typeof total === 'number' ? total.toLocaleString() : ''} Results
+              {typeof total === 'number' ? total.toLocaleString() : ''}{' '}
+              {total > 1 ? 'Results' : 'Result'}
             </Times>
           </Typography>
           {isArticle && (

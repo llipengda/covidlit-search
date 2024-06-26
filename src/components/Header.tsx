@@ -35,7 +35,11 @@ const Header = () => {
 
   const location = useLocation()
 
-  const isSearch = () => location.pathname.includes('/search')
+  const canSearch = () =>
+    location.pathname.includes('/search') ||
+    location.pathname.includes('/article') ||
+    location.pathname.includes('/journal') ||
+    location.pathname.includes('/author')
 
   const [focused, setFocused] = useState(false)
 
@@ -59,7 +63,7 @@ const Header = () => {
         <Link to='/home' title='Home page' style={{ marginTop: '10px' }}>
           <Logo />
         </Link>
-        {isSearch() && <SearchBox position='relative' />}
+        {canSearch() && <SearchBox position='relative' />}
       </Box>
       {needLogin ? (
         <Box sx={{ display: 'inline' }}>

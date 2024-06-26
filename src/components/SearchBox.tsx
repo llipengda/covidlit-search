@@ -2,7 +2,14 @@ import React, { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import SearchIcon from '@mui/icons-material/Search'
-import { Box, Collapse, InputBase, List, ListItemButton } from '@mui/material'
+import {
+  Box,
+  Collapse,
+  InputBase,
+  List,
+  ListItemButton,
+  Typography
+} from '@mui/material'
 
 import sleep from '@/utils/sleep'
 
@@ -30,6 +37,8 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
   const [focused, setFocused] = useState(false)
   const [selectedBtn, setSelectedBtn] = useState(0)
 
+  const [helperText, setHelperText] = useState('')
+
   const search = (index?: number) => () => {
     index && setSelectedBtn(index)
     navigate(
@@ -39,6 +48,9 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!value || value.length < 3) {
+      return
+    }
     if (e.key === 'Enter') {
       !!value && search()()
     }
@@ -73,11 +85,32 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
         onFocus={() => setFocused(true)}
         onChange={e => {
           setFocused(true)
+          console.log(e.target.value.length)
+          if (e.target.value.length < 3) {
+            setHelperText('Input at least 3 characters to search.')
+          } else {
+            setHelperText('')
+          }
+          if (e.target.value === '') {
+            setHelperText('')
+          }
           setValue(e.target.value)
         }}
         onKeyDown={onKeyDown}
         sx={{ lineHeight: '50px', height: '100%', ml: '15px', mr: '40px' }}
       />
+      <Typography
+        variant='body1'
+        color='error'
+        sx={{
+          left: '45px',
+          position: 'absolute',
+          top: '50%',
+          transform: 'translateY(-50%)'
+        }}
+      >
+        {helperText}
+      </Typography>
       <SearchIcon
         sx={{
           position: 'absolute',

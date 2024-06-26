@@ -16,6 +16,7 @@ import {
 } from '@mui/material'
 
 import ArticleApi from '@/api/Article'
+import CollectButton from '@/components/CollectButton'
 import TArticle from '@/types/Article'
 import getDate from '@/utils/getDate'
 
@@ -99,15 +100,19 @@ const Article = () => {
               </Typography>
             )}
           </Box>
-          <Box width='20%' display='flex' justifyContent='center'>
+          <Box width='20%' display='flex' flexDirection='row' gap='15px'>
             {article.url && (
               <Link to={article.url.split(';')[0]} target='_blank'>
-                <Button variant='contained'>
+                <Button
+                  variant='contained'
+                  sx={{ width: '120px', height: '40px' }}
+                >
                   <OpenInNewIcon sx={{ mr: '10px' }} />
                   Visit
                 </Button>
               </Link>
             )}
+            <CollectButton id={article.id} />
           </Box>
         </Box>
         <Box mt='20px'>

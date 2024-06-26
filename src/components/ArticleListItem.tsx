@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { Box, Button, Typography, styled } from '@mui/material'
 
+import CollectButton from '@/components/CollectButton'
 import HighlightText from '@/components/HighlightText'
 import type Article from '@/types/Article'
 import ArticleSearchBy from '@/types/ArticleSearchBy'
@@ -112,15 +113,16 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
           </Typography>
         )}
       </Box>
-      <Box width='20%'>
+      <Box width='20%' display='flex' flexDirection='column' gap='15px'>
         {article.url && (
           <Link to={article.url.split(';')[0]} target='_blank'>
-            <Button variant='contained'>
+            <Button variant='contained' sx={{ width: '120px', height: '40px' }}>
               <OpenInNewIcon sx={{ mr: '10px' }} />
               Visit
             </Button>
           </Link>
         )}
+        <CollectButton id={article.id} />
       </Box>
     </Box>
   )
