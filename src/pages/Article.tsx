@@ -184,7 +184,7 @@ const Article = () => {
                   <Typography key={cite.id}>
                     <Link to={`/article/${cite.id}`}>
                       <MLink>
-                        {cite.flag ? '[INDIRECT] ' : ''}
+                        {cite.flag ? <b>[INDIRECT] </b> : ''}
                         {cite.title}
                       </MLink>
                     </Link>

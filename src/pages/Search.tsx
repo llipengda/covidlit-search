@@ -138,6 +138,9 @@ const Search = () => {
   }, [])
 
   const handleApply = () => {
+    if (!fromValue || !toValue) {
+      return
+    }
     setFrom(fromValue)
     setTo(toValue)
     setLoading(true)
@@ -176,6 +179,9 @@ const Search = () => {
               onChange={e => setRefineInput(e.target.value)}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
+                  if (!refineInput) {
+                    return
+                  }
                   setRefine(refineInput)
                   setLoading(true)
                   window.history.pushState(
@@ -188,6 +194,9 @@ const Search = () => {
             />
             <SearchIcon
               onClick={() => {
+                if (!refineInput) {
+                  return
+                }
                 setRefine(refineInput)
                 setLoading(true)
                 window.history.pushState(
