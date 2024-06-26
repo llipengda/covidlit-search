@@ -62,7 +62,7 @@ const Article = () => {
   return (
     <Box mb='40px'>
       <Container maxWidth='xl'>
-        <Box display='flex' mt='40px' width='100%'>
+        <Box display='flex' mt='40px' width='100%' gap='15px'>
           <Box width='80%'>
             <Typography variant='h5'>
               <Upper>

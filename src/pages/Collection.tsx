@@ -15,7 +15,7 @@ const Collection = () => {
   return (
     <Box ml='120px' mt='40px'>
       {loading && <LinearProgress />}
-      <Typography variant='h4'>
+      <Typography variant='h4' sx={{ mt: '20px' }}>
         <Times>Collection</Times>
       </Typography>
       <Typography variant='body1' color='GrayText'>
