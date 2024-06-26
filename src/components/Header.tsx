@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import LogoutIcon from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
@@ -34,6 +34,8 @@ const Header = () => {
   const removeToken = useTokenStore(state => state.removeToken)
 
   const location = useLocation()
+
+  const navigate = useNavigate()
 
   const canSearch = () =>
     location.pathname.includes('/search') ||
@@ -122,19 +124,19 @@ const Header = () => {
                     transition: 'all 0.5s ease-in-out'
                   }}
                 >
-                  <ListItemButton>
+                  <ListItemButton onClick={() => navigate(`/user/profile`)}>
                     <ListItemIcon>
                       <PersonIcon />
                     </ListItemIcon>
                     <ListItemText>Profile</ListItemText>
                   </ListItemButton>
-                  <ListItemButton>
+                  <ListItemButton onClick={() => navigate(`/user/collection`)}>
                     <ListItemIcon>
                       <StarIcon />
                     </ListItemIcon>
                     <ListItemText>Collection</ListItemText>
                   </ListItemButton>
-                  <ListItemButton>
+                  <ListItemButton onClick={() => navigate(`/user/security`)}>
                     <ListItemIcon>
                       <SecurityIcon />
                     </ListItemIcon>

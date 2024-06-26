@@ -23,11 +23,16 @@ const get = async (page: number, pageSize: number) => {
   })
 }
 
+const cnt = async () => {
+  return await axios.get<number>('/collects/count')
+}
+
 const CollectApi = {
   add,
   remove,
   check,
-  get
+  get,
+  cnt
 }
 
 export default CollectApi

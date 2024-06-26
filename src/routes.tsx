@@ -9,6 +9,9 @@ const ResetPassword = lazy(() => import('@/pages/ResetPassword'))
 const Article = lazy(() => import('@/pages/Article'))
 const Journal = lazy(() => import('@/pages/Journal'))
 const Author = lazy(() => import('@/pages/Author'))
+const User = lazy(() => import('@/pages/User'))
+const Profile = lazy(() => import('@/pages/Profile'))
+const Collection = lazy(() => import('@/pages/Collection'))
 
 const routes: RouteObject[] = [
   {
@@ -42,6 +45,20 @@ const routes: RouteObject[] = [
   {
     path: 'author/:name',
     element: <Author />
+  },
+  {
+    path: 'user',
+    element: <User />,
+    children: [
+      {
+        path: 'profile',
+        element: <Profile />
+      },
+      {
+        path: 'collection',
+        element: <Collection />
+      }
+    ]
   },
   {
     path: '/',

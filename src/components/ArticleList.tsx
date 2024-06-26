@@ -11,6 +11,7 @@ import {
 
 import ArticleApi from '@/api/Article'
 import AuthorApi from '@/api/Author'
+import CollectApi from '@/api/Collect'
 import JournalApi from '@/api/Journal'
 import ArticleListItem from '@/components/ArticleListItem'
 import type Article from '@/types/Article'
@@ -21,8 +22,8 @@ type ArticleListProps =
       sortBy: string
       search: string
       searchBy: ArticleSearchBy
-      total: number
       allowNoUrl: boolean
+      total: number
       loading: boolean
       setTotal: (total: number) => void
       setLoading: (loading: boolean) => void
@@ -43,7 +44,7 @@ type ArticleListProps =
       loading: boolean
       setTotal?: (total: number) => void
       setLoading: (loading: boolean) => void
-      getFromType: 'journal' | 'author'
+      getFromType: 'journal' | 'author' | 'collection'
       getFrom: string
       refine?: never
       from?: never
@@ -127,15 +128,30 @@ const ArticleList: React.FC<ArticleListProps> = ({
         () => setLoading(false)
       )
     } else if (getFromType === 'journal') {
-      JournalApi.getArticles(getFrom, 1, pageSize).then(res => {
-        setArticles(res.data)
-        setLoading && setLoading(false)
-      })
+      JournalApi.getArticles(getFrom, 1, pageSize).then(
+        res => {
+          setArticles(res.data)
+          setLoading && setLoading(false)
+        },
+        () => setLoading && setLoading(false)
+      )
+    } else if (getFromType === 'author') {
+      AuthorApi.getArticles(getFrom, 1, pageSize).then(
+        res => {
+          setArticles(res.data)
+          setLoading && setLoading(false)
+        },
+        () => setLoading && setLoading(false)
+      )
     } else {
-      AuthorApi.getArticles(getFrom, 1, pageSize).then(res => {
-        setArticles(res.data)
-        setLoading && setLoading(false)
-      })
+      CollectApi.get(1, pageSize).then(
+        res => {
+          setArticles(res.data)
+          setLoading && setLoading(false)
+        },
+        () => setLoading && setLoading(false)
+      )
+      CollectApi.cnt().then(res => setTotal && setTotal(res.data))
     }
   }, [
     search,
@@ -222,8 +238,16 @@ const ArticleList: React.FC<ArticleListProps> = ({
                   },
                   () => setLoading && setLoading(false)
                 )
-              } else {
+              } else if (getFromType === 'author') {
                 AuthorApi.getArticles(getFrom, page, pageSize).then(
+                  res => {
+                    setArticles(res.data)
+                    setLoading && setLoading(false)
+                  },
+                  () => setLoading && setLoading(false)
+                )
+              } else {
+                CollectApi.get(page, pageSize).then(
                   res => {
                     setArticles(res.data)
                     setLoading && setLoading(false)

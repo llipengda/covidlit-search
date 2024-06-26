@@ -45,6 +45,11 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
 
   const navigate = useNavigate()
 
+  if (!article.id) {
+    // @ts-expect-error article do not have articleId 
+    article.id = article.articleId
+  }
+
   return (
     <Box display='flex' width='100%' mb='30px'>
       <Box

@@ -61,9 +61,14 @@ const updatePasswordByPassword = async (
   })
 }
 
+const update = async (user: User) => {
+  return axios.put<User>('/user/update', user)
+}
+
 const UserApi = {
   login,
   signup,
+  update,
   updatePasswordByCode,
   updatePasswordByPassword
 }
