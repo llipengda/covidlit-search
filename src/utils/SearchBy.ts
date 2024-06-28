@@ -1,28 +1,30 @@
 import ArticleSearchBy from '@/types/ArticleSearchBy'
 
-const getArray = (value: number): ('title' | 'author' | 'journal')[] => {
-  const res: ('title' | 'author' | 'journal')[] = []
+export type ArticleSearchByValue = ('Title' | 'Author' | 'Journal')
+
+const getArray = (value: number): ArticleSearchByValue[] => {
+  const res: ArticleSearchByValue[] = []
   if (value & ArticleSearchBy.title) {
-    res.push('title')
+    res.push('Title')
   }
   if (value & ArticleSearchBy.author) {
-    res.push('author')
+    res.push('Author')
   }
   if (value & ArticleSearchBy.journal) {
-    res.push('journal')
+    res.push('Journal')
   }
   return res
 }
 
-const getNumber = (value: ('title' | 'author' | 'journal')[]) => {
+const getNumber = (value: ArticleSearchByValue[]) => {
   let res = 0
-  if (value.includes('title')) {
+  if (value.includes('Title')) {
     res |= ArticleSearchBy.title
   }
-  if (value.includes('author')) {
+  if (value.includes('Author')) {
     res |= ArticleSearchBy.author
   }
-  if (value.includes('journal')) {
+  if (value.includes('Journal')) {
     res |= ArticleSearchBy.journal
   }
   return res

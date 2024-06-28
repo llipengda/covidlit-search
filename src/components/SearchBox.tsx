@@ -85,7 +85,6 @@ const SearchBox: typeof Box = (props: { [key: string]: any }) => {
         onFocus={() => setFocused(true)}
         onChange={e => {
           setFocused(true)
-          console.log(e.target.value.length)
           if (e.target.value.length < 3) {
             setHelperText('Input at least 3 characters to search.')
           } else {
