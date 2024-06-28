@@ -186,8 +186,6 @@ const ArticleList: React.FC<ArticleListProps> = ({
             <ArticleSkeleton />
             <ArticleSkeleton />
             <ArticleSkeleton />
-            <ArticleSkeleton />
-            <ArticleSkeleton />
           </>
         )}
       </List>
@@ -197,7 +195,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
         flexDirection='column'
         alignItems='center'
       >
-        {(total === undefined || total > pageSize) && (
+        {(total === undefined || total > pageSize) && (!loading) && (
           <Pagination
             variant='outlined'
             color='primary'

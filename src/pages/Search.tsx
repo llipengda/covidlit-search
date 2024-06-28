@@ -37,26 +37,23 @@ const Times = styled('span')({
 })
 
 const Search = () => {
-  const search = useSearchParams()[0].get('q')!
-  const type = useSearchParams()[0].get('type')!
+  const params = useSearchParams()[0]
+
+  const search = params.get('q')!
+  const type = params.get('type')!
   const [searchBy, setSearchBy] = useState(
-    parseInt(useSearchParams()[0].get('searchBy') || '1')
+    parseInt(params.get('searchBy') || '1')
   )
   const [allowNoUrl, setAllowNoUrl] = useState(
-    useSearchParams()[0].get('allowNoUrl') === 'true'
+    params.get('allowNoUrl') === 'true'
   )
   const [sortBy, setSortBy] = useState<
     'publish_time' | 'title' | 'journal_name'
-  >(
-    useSearchParams()[0].get('sortBy') as
-      | 'publish_time'
-      | 'title'
-      | 'journal_name'
-  )
-  const [desc, setDesc] = useState(useSearchParams()[0].get('desc') === 'true')
-  const [from, setFrom] = useState(useSearchParams()[0].get('from') || '')
-  const [to, setTo] = useState(useSearchParams()[0].get('to') || '')
-  const [refine, setRefine] = useState(useSearchParams()[0].get('refine') || '')
+  >(params.get('sortBy') as 'publish_time' | 'title' | 'journal_name')
+  const [desc, setDesc] = useState(params.get('desc') === 'true')
+  const [from, setFrom] = useState(params.get('from') || '')
+  const [to, setTo] = useState(params.get('to') || '')
+  const [refine, setRefine] = useState(params.get('refine') || '')
 
   const [fromValue, setFromValue] = useState(from)
   const [toValue, setToValue] = useState(to)
@@ -187,7 +184,7 @@ const Search = () => {
         width='100vw'
         display='flex'
         flexDirection='row'
-        minHeight='calc(100vh - 120px)'
+        minHeight={loading ? 'calc(100vh - 124px)' : 'calc(100vh - 120px)'}
       >
         <Box width='15%' bgcolor='background.paper' p='15px'>
           <Typography variant='h5'>
@@ -225,22 +222,30 @@ const Search = () => {
               <SearchIcon onClick={handleRefine} />
             </IconButton>
           </Box>
-          <Button variant='contained' sx={{ mt: '15px' }} onClick={handleRefine}>
+          <Button
+            variant='contained'
+            sx={{ mt: '15px' }}
+            onClick={handleRefine}
+          >
             Apply
           </Button>
-          <Button variant='outlined' sx={{ mt: '15px', ml: '10px' }} onClick={() => {
-            if (refine === '') {
-              return
-            }
-            setRefineInput('')
-            setRefine('')
-            setLoading(true)
-            window.history.pushState(
-              null,
-              '',
-              `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=&from=${from}&to=${to}`
-            )
-          }}>
+          <Button
+            variant='outlined'
+            sx={{ mt: '15px', ml: '10px' }}
+            onClick={() => {
+              if (refine === '') {
+                return
+              }
+              setRefineInput('')
+              setRefine('')
+              setLoading(true)
+              window.history.pushState(
+                null,
+                '',
+                `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=&from=${from}&to=${to}`
+              )
+            }}
+          >
             Clear
           </Button>
           {isArticle && (
