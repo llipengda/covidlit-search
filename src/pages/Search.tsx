@@ -9,6 +9,7 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
+  IconButton,
   InputLabel,
   LinearProgress,
   ListItemText,
@@ -75,6 +76,19 @@ const Search = () => {
     'Author',
     'Journal'
   ] as ArticleSearchByValue[]
+
+  const handleRefine = () => {
+    if (refineInput === refine) {
+      return
+    }
+    setRefine(refineInput)
+    setLoading(true)
+    window.history.pushState(
+      null,
+      '',
+      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refineInput}&from=${from}&to=${to}`
+    )
+  }
 
   const handleChange = (event: SelectChangeEvent<typeof searchByValue>) => {
     const value = event.target.value
@@ -153,7 +167,7 @@ const Search = () => {
   }, [])
 
   const handleApply = () => {
-    if (!fromValue || !toValue || (fromValue === from && toValue === to)) {
+    if (fromValue === from && toValue === to) {
       return
     }
     setFrom(fromValue)
@@ -194,42 +208,41 @@ const Search = () => {
               onChange={e => setRefineInput(e.target.value)}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
-                  if (!refineInput || refineInput === refine) {
-                    return
-                  }
-                  setRefine(refineInput)
-                  setLoading(true)
-                  window.history.pushState(
-                    null,
-                    '',
-                    `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refineInput}&from=${from}&to=${to}`
-                  )
+                  handleRefine()
                 }
               }}
             />
-            <SearchIcon
-              onClick={() => {
-                if (!refineInput || refineInput === refine) {
-                  return
-                }
-                setRefine(refineInput)
-                setLoading(true)
-                window.history.pushState(
-                  null,
-                  '',
-                  `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refineInput}&from=${from}&to=${to}`
-                )
-              }}
+            <IconButton
               sx={{
                 position: 'absolute',
                 color: 'GrayText',
-                right: '5px',
+                right: '0px',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 cursor: 'pointer'
               }}
-            />
+            >
+              <SearchIcon onClick={handleRefine} />
+            </IconButton>
           </Box>
+          <Button variant='contained' sx={{ mt: '15px' }} onClick={handleRefine}>
+            Apply
+          </Button>
+          <Button variant='outlined' sx={{ mt: '15px', ml: '10px' }} onClick={() => {
+            if (refine === '') {
+              return
+            }
+            setRefineInput('')
+            setRefine('')
+            setLoading(true)
+            window.history.pushState(
+              null,
+              '',
+              `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=&from=${from}&to=${to}`
+            )
+          }}>
+            Clear
+          </Button>
           {isArticle && (
             <>
               <Divider flexItem sx={{ mt: '20px', mb: '10px' }} />
@@ -271,10 +284,31 @@ const Search = () => {
                 />
                 <Button
                   variant='contained'
-                  sx={{ top: '10px' }}
+                  sx={{ mt: '10px' }}
                   onClick={handleApply}
                 >
                   Apply
+                </Button>
+                <Button
+                  variant='outlined'
+                  sx={{ mt: '10px', ml: '10px' }}
+                  onClick={() => {
+                    if (fromValue === '' && toValue === '') {
+                      return
+                    }
+                    setFromValue('')
+                    setToValue('')
+                    setFrom('')
+                    setTo('')
+                    setLoading(true)
+                    window.history.pushState(
+                      null,
+                      '',
+                      `/search?q=${search}&type=${type}&searchBy=${searchBy}&allowNoUrl=${allowNoUrl}&sortBy=${sortBy}&desc=${desc}&refine=${refine}&from=&to=`
+                    )
+                  }}
+                >
+                  Clear
                 </Button>
               </Box>
             </>
