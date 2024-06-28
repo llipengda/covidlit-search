@@ -176,7 +176,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
             <ListItem key={article.id + article.journalName}>
               <ArticleListItem
                 article={article}
-                keywords={search ? [search] : []}
+                keywords={[search || '', refine || '']}
                 searchBy={searchBy ?? 1}
               />
             </ListItem>
