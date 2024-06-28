@@ -28,7 +28,8 @@ import dayjs from 'dayjs'
 import ArticleList from '@/components/ArticleList'
 import AuthorList from '@/components/AuthorList'
 import JournalList from '@/components/JournalList'
-import SearchBy from '@/utils/SearchBy'
+import SearchBy, { type ArticleSearchByValue } from '@/utils/SearchBy'
+import Message from '@/utils/message'
 
 const Times = styled('span')({
   fontFamily: 'Times New Roman'
@@ -66,25 +67,30 @@ const Search = () => {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
 
-  const [searchByValue, setSearchByValue] = useState<
-    ('title' | 'author' | 'journal')[]
-  >(SearchBy.getArray(searchBy))
-  const searchByOptions = ['title', 'author', 'journal'] as (
-    | 'title'
-    | 'author'
-    | 'journal'
-  )[]
+  const [searchByValue, setSearchByValue] = useState<ArticleSearchByValue[]>(
+    SearchBy.getArray(searchBy)
+  )
+  const searchByOptions = [
+    'Title',
+    'Author',
+    'Journal'
+  ] as ArticleSearchByValue[]
 
   const handleChange = (event: SelectChangeEvent<typeof searchByValue>) => {
     const value = event.target.value
     setSearchByValue(
       typeof value === 'string'
-        ? (value.split(',') as ('title' | 'author' | 'journal')[])
+        ? (value.split(',') as ArticleSearchByValue[])
         : value
     )
   }
 
   const handleClose = () => {
+    if (searchByValue.length === 0) {
+      setSearchByValue(SearchBy.getArray(searchBy))
+      Message.error('At least one search by should be selected', 2500)
+      return
+    }
     if (SearchBy.getNumber(searchByValue) === searchBy) {
       return
     }
