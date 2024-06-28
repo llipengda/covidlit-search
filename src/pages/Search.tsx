@@ -218,8 +218,9 @@ const Search = () => {
                 transform: 'translateY(-50%)',
                 cursor: 'pointer'
               }}
+              onClick={handleRefine}
             >
-              <SearchIcon onClick={handleRefine} />
+              <SearchIcon />
             </IconButton>
           </Box>
           <Button
