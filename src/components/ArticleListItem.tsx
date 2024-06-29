@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { Box, Button, Typography, styled } from '@mui/material'
@@ -43,10 +43,8 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
 }) => {
   const authors = article.authors?.split(';').map(a => a.trim()) ?? []
 
-  const navigate = useNavigate()
-
   if (!article.id) {
-    // @ts-expect-error article do not have articleId 
+    // @ts-expect-error article do not have articleId
     article.id = article.articleId
   }
 
@@ -55,68 +53,69 @@ const ArticleListItem: React.FC<ArticleListItemProps> = ({
       <Box
         width='80%'
         mr='40px'
-        onClick={() => navigate(`/article/${article.id}`)}
         sx={{
           cursor: 'pointer'
         }}
       >
-        <Typography variant='h5'>
-          <Upper>
-            <Times>
-              <HighlightText
-                text={article.title}
-                keywords={keywords}
-                disabled={!(searchBy & ArticleSearchBy.title)}
-              />
-            </Times>
-          </Upper>
-        </Typography>
-        {article.authors && (
-          <Typography variant='body1'>
-            <YaHei>
-              {authors.map((author, index) => (
-                <span key={index}>
-                  <Underline>
-                    <HighlightText
-                      text={author}
-                      keywords={keywords}
-                      disabled={!(searchBy & ArticleSearchBy.author)}
-                    />
-                  </Underline>
-                  {index === authors.length - 1 ? '' : <>;&nbsp;&nbsp;</>}
-                </span>
-              ))}
-            </YaHei>
-          </Typography>
-        )}
-        {article.doi && (
-          <Typography variant='body1' color='GrayText'>
-            <Roboto>DOI: {article.doi}</Roboto>
-          </Typography>
-        )}
-        {article.journalName && (
-          <Typography variant='body1' color='GrayText'>
-            <Roboto>
-              <i>
+        <Link to={`/article/${article.id}`} target='_blank'>
+          <Typography variant='h5'>
+            <Upper>
+              <Times>
                 <HighlightText
-                  text={article.journalName}
+                  text={article.title}
                   keywords={keywords}
-                  disabled={!(searchBy & ArticleSearchBy.journal)}
+                  disabled={!(searchBy & ArticleSearchBy.title)}
                 />
-                {article.volume && ` ${article.volume}`}
-                {article.pages && ` ${article.pages}`}
-                {article.publishTime && ` (${getDate(article.publishTime)})`}
-              </i>
-            </Roboto>
+              </Times>
+            </Upper>
           </Typography>
-        )}
-        {article.abstract && (
-          <Typography variant='body1' color='GrayText' ml='20px'>
-            <Roboto>
-              <i>{maxLength(500)(article.abstract)}</i>
-            </Roboto>
-          </Typography>
-        )}
+          {article.authors && (
+            <Typography variant='body1'>
+              <YaHei>
+                {authors.map((author, index) => (
+                  <span key={index}>
+                    <Underline>
+                      <HighlightText
+                        text={author}
+                        keywords={keywords}
+                        disabled={!(searchBy & ArticleSearchBy.author)}
+                      />
+                    </Underline>
+                    {index === authors.length - 1 ? '' : <>;&nbsp;&nbsp;</>}
+                  </span>
+                ))}
+              </YaHei>
+            </Typography>
+          )}
+          {article.doi && (
+            <Typography variant='body1' color='GrayText'>
+              <Roboto>DOI: {article.doi}</Roboto>
+            </Typography>
+          )}
+          {article.journalName && (
+            <Typography variant='body1' color='GrayText'>
+              <Roboto>
+                <i>
+                  <HighlightText
+                    text={article.journalName}
+                    keywords={keywords}
+                    disabled={!(searchBy & ArticleSearchBy.journal)}
+                  />
+                  {article.volume && ` ${article.volume}`}
+                  {article.pages && ` ${article.pages}`}
+                  {article.publishTime && ` (${getDate(article.publishTime)})`}
+                </i>
+              </Roboto>
+            </Typography>
+          )}
+          {article.abstract && (
+            <Typography variant='body1' color='GrayText' ml='20px'>
+              <Roboto>
+                <i>{maxLength(500)(article.abstract)}</i>
+              </Roboto>
+            </Typography>
+          )}
+        </Link>
       </Box>
       <Box width='20%' display='flex' flexDirection='column' gap='15px'>
         {article.url && (

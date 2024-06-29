@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
+import HistoryIcon from '@mui/icons-material/History'
 import LogoutIcon from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import SecurityIcon from '@mui/icons-material/Security'
@@ -135,6 +136,12 @@ const Header = () => {
                       <StarIcon />
                     </ListItemIcon>
                     <ListItemText>Collection</ListItemText>
+                  </ListItemButton>
+                  <ListItemButton onClick={() => navigate('/user/history')}>
+                    <ListItemIcon>
+                      <HistoryIcon />
+                    </ListItemIcon>
+                    <ListItemText>History</ListItemText>
                   </ListItemButton>
                   <ListItemButton onClick={() => navigate(`/user/security`)}>
                     <ListItemIcon>

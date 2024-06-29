@@ -16,6 +16,7 @@ import JournalApi from '@/api/Journal'
 import ArticleListItem from '@/components/ArticleListItem'
 import type Article from '@/types/Article'
 import type ArticleSearchBy from '@/types/ArticleSearchBy'
+import HistoryApi from '@/api/History'
 
 type ArticleListProps =
   | {
@@ -44,7 +45,7 @@ type ArticleListProps =
       loading: boolean
       setTotal?: (total: number) => void
       setLoading: (loading: boolean) => void
-      getFromType: 'journal' | 'author' | 'collection'
+      getFromType: 'journal' | 'author' | 'collection' | 'history'
       getFrom: string
       refine?: never
       from?: never
@@ -143,7 +144,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
         },
         () => setLoading && setLoading(false)
       )
-    } else {
+    } else if (getFromType === 'collection') {
       CollectApi.get(1, pageSize).then(
         res => {
           setArticles(res.data)
@@ -152,6 +153,15 @@ const ArticleList: React.FC<ArticleListProps> = ({
         () => setLoading && setLoading(false)
       )
       CollectApi.cnt().then(res => setTotal && setTotal(res.data))
+    } else {
+      HistoryApi.getCnt().then(res => setTotal && setTotal(res.data))
+      HistoryApi.get(1, pageSize).then(
+        res => {
+          setArticles(res.data as unknown as Article[])
+          setLoading && setLoading(false)
+        },
+        () => setLoading && setLoading(false)
+      )
     }
   }, [
     search,
@@ -173,7 +183,8 @@ const ArticleList: React.FC<ArticleListProps> = ({
       <List>
         {!loading ? (
           articles.map(article => (
-            <ListItem key={article.id + article.journalName}>
+            // @ts-expect-error no article.time
+            <ListItem key={article.id + article.journalName + article.time ? article.time : ''}>
               <ArticleListItem
                 article={article}
                 keywords={[search || '', refine || '']}
@@ -244,10 +255,18 @@ const ArticleList: React.FC<ArticleListProps> = ({
                   },
                   () => setLoading && setLoading(false)
                 )
-              } else {
+              } else if (getFromType === 'collection') {
                 CollectApi.get(page, pageSize).then(
                   res => {
                     setArticles(res.data)
+                    setLoading && setLoading(false)
+                  },
+                  () => setLoading && setLoading(false)
+                )
+              } else {
+                HistoryApi.get(page, pageSize).then(
+                  res => {
+                    setArticles(res.data as unknown as Article[])
                     setLoading && setLoading(false)
                   },
                   () => setLoading && setLoading(false)

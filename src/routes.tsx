@@ -12,6 +12,7 @@ const Author = lazy(() => import('@/pages/Author'))
 const User = lazy(() => import('@/pages/User'))
 const Profile = lazy(() => import('@/pages/Profile'))
 const Collection = lazy(() => import('@/pages/Collection'))
+const History = lazy(() => import('@/pages/History'))
 const Security = lazy(() => import('@/pages/Security'))
 const Page404 = lazy(() => import('@/pages/404'))
 
@@ -59,6 +60,10 @@ const routes: RouteObject[] = [
       {
         path: 'collection',
         element: <Collection />
+      },
+      {
+        path: 'history',
+        element: <History />
       },
       {
         path: 'security',

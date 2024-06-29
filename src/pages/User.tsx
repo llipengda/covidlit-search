@@ -1,5 +1,6 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
+import HistoryIcon from '@mui/icons-material/History'
 import PersonIcon from '@mui/icons-material/Person'
 import SecurityIcon from '@mui/icons-material/Security'
 import StarIcon from '@mui/icons-material/Star'
@@ -54,6 +55,15 @@ const Profile = () => {
                   <StarIcon />
                 </ListItemIcon>
                 <ListItemText>Collection</ListItemText>
+              </ListItemButton>
+              <ListItemButton
+                selected={path.includes('history')}
+                onClick={nav('history')}
+              >
+                <ListItemIcon>
+                  <HistoryIcon />
+                </ListItemIcon>
+                <ListItemText>History</ListItemText>
               </ListItemButton>
               <ListItemButton
                 selected={path.includes('security')}
